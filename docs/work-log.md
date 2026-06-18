@@ -438,3 +438,44 @@
   т.п.). Саму сборку/роутинг на стороне Vercel локально проверить нельзя (нет
   Docker/Vercel CLI) — подтвердится первым деплоем; конфиг сделан по
   каноничному паттерну FastAPI-on-Vercel.
+
+---
+
+## 2026-06-19 — Редизайн фронтенда (soft-rose дизайн-система)
+
+- По детальному ТЗ пользователя полностью переделал визуальный язык кабинета
+  врача (`frontend/index.html`) и PWA пациентки (`frontend/patient-pwa/`
+  — `styles.css` + `index.html`): цветовая система, типографика, компоненты.
+- **Цвета:** заменил сине-серую палитру на soft-rose из ТЗ (CSS-переменные:
+  `--bg #FDF6F9`, `--rose #E8779A`, `--rose-deep`, `--rose-pale`, `--blush`,
+  `--lavender`, `--peach`, `--mint`, `--ink #3D2535`, `--urgent` и т.д.).
+- **Шрифты:** «DM Serif Display» (заголовки h1/h2) + «DM Sans» (body) с Google
+  Fonts (`display=swap`, системный serif/sans как фолбэк офлайн).
+- **Компоненты:** топбар (white + border-bottom, лого «W» в круге с
+  градиентом `135deg rose→blush`), таб-переключатель языка (активный — rose,
+  `border-radius 99px`), `.btn-primary` (градиент + `shadow 0 4px 14px`,
+  hover → `rose-deep`), `.btn-secondary` (ghost, border `rose-pale`), карточки
+  (`radius 18px`, hover `rose-pale` + мягкая тень), инпуты (`focus` — rose +
+  кольцо `0 0 0 3px #E877991F`, фон `#FFFAFC`), пиллы/бейджи (uptodate/duesoon/
+  overdue/priority/routine/urgent/redflag/demo по ТЗ), `.msg-box`
+  (обычный/urgent), таблица очереди (rose-тон, горизонтальный скролл сохранён).
+- **Декор (3 из 3):** градиентный hero-баннер под топбаром в PWA (gradient
+  `160deg`, плавный mask-fade в фон); SVG-«акварельный цветок» в пустом
+  состоянии кабинета пациентки (`.empty-state`); тонкий dot-паттерн
+  (`radial-gradient`, repeat-x) в шапке карточек.
+- **Что НЕ трогал (по ТЗ):** весь JS (fetch/auth/i18n-словари/health), тексты
+  дисклеймеров и safety-сообщений, структуру (все элементы и `id` на месте,
+  классы только переименованы/добавлены), RBAC. `data-i18n`-ключи не менял и
+  новых строк без словаря не добавлял (hero-tagline и бейдж «демо» — статика,
+  без `data-i18n`, чтобы `applyLang` их не затирал).
+- **Файлы:** `frontend/index.html`, `frontend/patient-pwa/index.html`,
+  `frontend/patient-pwa/styles.css`.
+- **Проверка:** обе страницы парсятся; все `id`, которые дёргает JS
+  (`getElementById` / `$()`), на месте; все `data-i18n`-ключи присутствуют в
+  словарях; `app.js` не изменён (git diff пуст); баланс скобок CSS; touch-таргеты
+  `min-height` 44–48px; таблица — `overflow-x:auto`. **Скриншоты headless
+  Chrome:** кабинет врача (≈900px) и PWA пациентки (375px) — вёрстка не ломается,
+  без горизонтального переполнения, шрифты DM подхватились, палитра/компоненты
+  соответствуют ТЗ.
+- **На заметку (вне scope ТЗ):** `manifest.json` `theme_color` и иконки PWA
+  всё ещё синие (`#1456c4`) — при желании перегенерировать под rose отдельно.
