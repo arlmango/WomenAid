@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/frontend/index.html" },
+    { "source": "/patient-pwa", "destination": "/frontend/patient-pwa/index.html" },
+    { "source": "/patient-pwa/", "destination": "/frontend/patient-pwa/index.html" },
+    { "source": "/(.*)", "destination": "/frontend/$1" }
+  ],
+  "headers": [
+    {
+      "source": "/patient-pwa/sw.js",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    }
+  ]
+}
