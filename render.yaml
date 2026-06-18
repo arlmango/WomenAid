@@ -1,0 +1,39 @@
+# Render Blueprint — deploys the whole WomenAId stack as ONE Docker web service
+# (nginx static frontend + reverse proxy + uvicorn/FastAPI + SQLite), using
+# deploy/Dockerfile.
+#
+# Setup:
+#   1. Push this repo to GitHub (already done).
+#   2. Render dashboard -> New + -> Blueprint -> pick this repo. Render reads
+#      this file and creates the service + persistent disk.
+#   3. Set WOMENAID_FILE_ENCRYPTION_KEY in the service's Environment (it is not
+#      auto-generated because it must be a VALID Fernet key — generate one with:
+#        python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+#      Without it, login/health/static work but uploading an image fails loudly
+#      by design — encryption-at-rest is never silently skipped).
+#
+# After deploy the app is at https://<service>.onrender.com
+#   /              -> doctor cabinet     /patient-pwa/ -> patient PWA
+#   demo login: demo_doc / demo1234
+services:
+  - type: web
+    name: womenaid
+    runtime: docker
+    dockerfilePath: ./deploy/Dockerfile
+    dockerContext: .
+    plan: starter            # 'free' has NO persistent disk (see README note);
+                             # 'starter' is required for the disk below.
+    region: frankfurt        # closest Render region to Kazakhstan
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: WOMENAID_SECRET_KEY
+        generateValue: true          # Render generates a strong random JWT secret
+      - key: WOMENAID_FILE_ENCRYPTION_KEY
+        sync: false                  # set manually — must be a valid Fernet key
+      - key: WOMENAID_DEFAULT_RETENTION_DAYS
+        value: "1095"                # PLACEHOLDER (~3y) — confirm with clinic legal
+    disk:
+      name: womenaid-data
+      mountPath: /data               # SQLite DB + encrypted uploads persist here
+      sizeGB: 1

@@ -341,3 +341,56 @@
   `image/png` и т.д.), основной `index.html` по-прежнему работает и содержит
   ссылку на PWA. Иконки — валидные PNG нужных размеров (192/512/512/180/32).
   Все временные файлы/процессы удалены после проверки.
+
+---
+
+## 2026-06-19 — Деплой: диагностика Vercel 404 + конфиг для container-хоста
+
+- Пользователь задеплоил проект на Vercel и получил `404: NOT_FOUND`
+  (`ID: fra1::…` — сигнатура Vercel). Диагноз: архитектурное несоответствие, а
+  не отсутствие файлов (всё закоммичено и в origin/main). Проект — Docker-стек
+  (FastAPI+SQLite+nginx), а Vercel раздаёт только статику/serverless: нет
+  постоянного uvicorn/SQLite и writable-диска для зашифрованных снимков, аудита
+  и retention. В корне нет `index.html` → 404 на `/`; даже отдав статику, Vercel
+  не поднимет бэкенд (логин/`/health` не заработают).
+- Спросил направление (AskUserQuestion). Выбор пользователя: **весь стек на
+  один container-хост** (наименьший объём переделок, сохраняет single-origin,
+  persistent-данные и весь модуль защиты данных без правок кода).
+- **Решение — один комбинированный Docker-образ** (`deploy/Dockerfile`): в одном
+  контейнере nginx (статика + reverse-proxy `/api`→`127.0.0.1:8000`,
+  `/health`/`/docs`/`/openapi.json`) и uvicorn. Тот же single-origin, что в
+  локальном `docker-compose`, без CORS и без изменений фронтенда/бэкенда.
+  - `deploy/nginx.conf.template` — как `docker/nginx.conf`, но `listen ${PORT}`
+    (подстановка через envsubst на старте) и проксирование на локальный uvicorn;
+    плюс `Cache-Control: no-cache` для `sw.js`, чтобы обновления PWA доходили.
+  - `deploy/entrypoint.sh` — idempotent seed демо-данных, опциональное обучение
+    модели (по умолчанию ВЫКЛ — модель не подключена к serving, ради быстрого и
+    надёжного старта), запуск uvicorn в фоне + ожидание готовности, envsubst
+    nginx-конфига под `$PORT`, запуск nginx в foreground; `wait -n` — если
+    падает любой процесс, контейнер завершается (хост перезапустит).
+  - `render.yaml` — Blueprint для Render (push-to-deploy из GitHub, как было на
+    Vercel): web-сервис на Docker, диск `/data` (SQLite + снимки), healthcheck
+    `/health`, регион `frankfurt` (ближайший к Казахстану). `WOMENAID_SECRET_KEY`
+    — `generateValue`, `WOMENAID_FILE_ENCRYPTION_KEY` — `sync:false` (валидный
+    ключ Fernet нельзя автогенерировать; задаётся вручную, без него загрузка
+    осознанно падает, шифрование не пропускается молча).
+- Backend/фронтенд-код НЕ менялся (правки только инфраструктурные + docs).
+- **Файлы:** `deploy/Dockerfile` (новый), `deploy/nginx.conf.template` (новый),
+  `deploy/entrypoint.sh` (новый), `render.yaml` (новый), `README.md`.
+- **Проверка** (без локального Docker — его нет в окружении; сборку образа
+  подтвердит первый деплой на Render):
+  - `bash -n deploy/entrypoint.sh` — синтаксис ОК.
+  - Симуляция envsubst: в `nginx.conf.template` подставляется только `${PORT}`
+    (`listen 10000;`), а `$host`/`$remote_addr`/`$uri`/`$scheme` сохраняются.
+  - `render.yaml` — валидный YAML, нужные ключи (runtime docker, dockerfilePath,
+    healthCheckPath `/health`, диск `/data`, 3 env-переменные).
+  - **Функциональный прогон backend-слоя** (той части, что проксирует nginx) из
+    venv на временной БД `/tmp` + реальный ключ Fernet: seed → `/health` 200,
+    `demo_doc` логин → валидный JWT, очередь клиники 200 (клиницист) / 401
+    (без токена), `patient1` загрузка снимка → 200 без `raw_score`/`confidence`,
+    `/openapi.json` 200. 7/7 PASS. Реальная `backend/womenaid.db` не тронута.
+  - Статика (PWA + кабинет врача) проверена ранее через `http.server`.
+- **Дальше (нужно действие пользователя):** эти файлы надо закоммитить и
+  запушить в `main`, чтобы Render их увидел; затем подключить репозиторий в
+  Render как Blueprint и задать `WOMENAID_FILE_ENCRYPTION_KEY`. Авто-коммит не
+  делал — по правилу коммит/пуш только по явной просьбе.

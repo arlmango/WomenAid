@@ -47,6 +47,46 @@ checkpoint уже есть, переобучение пропускается.
 
 Ниже — запуск без Docker (для разработки).
 
+## Деплой на container-хост (Render / Railway / Fly)
+
+> ⚠️ **Vercel не подходит.** Проект — это Docker-стек (FastAPI + SQLite +
+> nginx), а Vercel раздаёт только статику и serverless-функции: нет постоянного
+> uvicorn/SQLite и нет writable-диска для зашифрованных снимков, аудита и
+> retention. Деплой на Vercel даёт `404: NOT_FOUND`. Нужен **container-хост**.
+
+Стек разворачивается одним Docker-образом (`deploy/Dockerfile`), где в одном
+контейнере работают nginx (статика + reverse-proxy `/api` → `127.0.0.1:8000`) и
+uvicorn — то есть тот же single-origin, что и в локальном `docker-compose`, без
+CORS и без правок фронтенда.
+
+**Render (push-to-deploy из GitHub, как было на Vercel):**
+
+1. Запушьте репозиторий в GitHub.
+2. Render → **New + → Blueprint** → выберите этот репозиторий. Render прочитает
+   `render.yaml` и создаст web-сервис + постоянный диск `/data`.
+3. В Environment сервиса задайте `WOMENAID_FILE_ENCRYPTION_KEY` (он не
+   генерируется автоматически — должен быть валидным ключом Fernet):
+
+   ```bash
+   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+   ```
+
+   Без него вход/health/статика работают, но загрузка снимка осознанно падает с
+   ошибкой — шифрование на диске никогда не пропускается молча.
+4. После деплоя: `https://<сервис>.onrender.com/` — кабинет врача,
+   `…/patient-pwa/` — PWA пациентки. Демо-вход: `demo_doc` / `demo1234`.
+
+**Постоянные данные.** `render.yaml` объявляет диск `/data` (SQLite + снимки +
+аудит) и план `starter` — диск требует платного плана. Для быстрого бесплатного
+смоук-теста можно убрать блок `disk:` и поставить `plan: free`, **но** тогда
+данные эфемерны (сбрасываются при каждом редеплое и при засыпании сервиса) —
+для реального пилота это неприемлемо, используйте `starter` + диск.
+
+**Railway / Fly.io.** Образ переносим: укажите `deploy/Dockerfile`, смонтируйте
+том на `/data` и задайте те же переменные (`WOMENAID_SECRET_KEY`,
+`WOMENAID_FILE_ENCRYPTION_KEY`). Хост подставляет `$PORT` — entrypoint
+автоматически рендерит nginx под него.
+
 ## Стек
 
 - **Backend:** FastAPI, SQLite (SQLAlchemy 2.0)
