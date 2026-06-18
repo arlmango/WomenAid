@@ -1,0 +1,13 @@
+# Slim deps for the Vercel Python serverless function (api/index.py).
+# The serving path imports NO scikit-learn/numpy/joblib (those are only used by
+# the offline ML training scripts in backend/app/ml/), so they are deliberately
+# excluded here to stay well under Vercel's function size limit.
+# Local dev / the container-host image use backend/requirements.txt instead.
+fastapi
+sqlalchemy>=2.0
+passlib[bcrypt]
+bcrypt==4.0.1
+python-jose[cryptography]
+cryptography
+python-multipart
+reportlab

@@ -394,3 +394,47 @@
   запушить в `main`, чтобы Render их увидел; затем подключить репозиторий в
   Render как Blueprint и задать `WOMENAID_FILE_ENCRYPTION_KEY`. Авто-коммит не
   делал — по правилу коммит/пуш только по явной просьбе.
+
+---
+
+## 2026-06-19 — Vercel: фикс 404 + рабочий бэкенд (serverless, эфемерное демо)
+
+- Пользователь настоял оставить деплой на Vercel и попросил «доработай чтобы всё
+  работало» (не только убрать 404, но и логин/API).
+- **Шаг 1 — фикс 404** (`vercel.json`, коммит `5072669`, запушен с явного
+  разрешения): фронтенд лежит в `frontend/`, в корне нет `index.html` → Vercel
+  отдавал 404. Добавил rewrites: `/` → `frontend/index.html`, `/patient-pwa/` →
+  PWA, `/(.*)` → `frontend/$1`.
+- **Шаг 2 — бэкенд как Vercel Python serverless** (`api/index.py`): функция
+  монтирует реальный FastAPI (`app.main`) под `/api`, так что существующие
+  вызовы фронта `/api/...` работают БЕЗ правок фронтенда (mount срезает префикс
+  `/api`); плюс лёгкий `/health` на корне. На Vercel writable только `/tmp` и он
+  эфемерный → БД (`sqlite:////tmp/...`) и загрузки в `/tmp/uploads`,
+  демо-данные пересеваются на каждом cold start (`demo_doc`/`admin`/
+  `patient1..3`, пароль `demo1234`). `os.environ.setdefault(...)` ставится ДО
+  импорта `app` (config читает env на импорте); демо-ключ Fernet захардкожен
+  для работы загрузки из коробки (данные в `/tmp` одноразовые; реальные ключи
+  задаются в env Vercel).
+- **Размер функции:** проверил граф импортов — serving-путь НЕ тянет
+  scikit-learn/numpy/joblib (они только в `backend/app/ml/`, не импортируются
+  роутерами). Поэтому отдельный слим `requirements.txt` в корне (fastapi,
+  sqlalchemy, passlib[bcrypt], bcrypt, python-jose, cryptography,
+  python-multipart, reportlab) — влезает в лимит Vercel. Локальный
+  `backend/requirements.txt` и Docker-образ не тронуты.
+- `vercel.json`: `functions.api/index.py.includeFiles="backend/**"` (бандлит
+  пакет), rewrites `/api/(.*)` и `/health` → функция (раньше статики),
+  `no-cache` для `sw.js`.
+- README: секция «Демо на Vercel (эфемерные данные)» + предупреждение, что это
+  ДЕМО (данные не персистентны), а пилот — на container-хосте.
+- Backend/фронтенд-код НЕ менялся.
+- **Файлы:** `api/index.py` (новый), `requirements.txt` (новый, корневой слим),
+  `vercel.json` (обновлён), `README.md`.
+- **Проверка (локально, как импортирует Vercel):** загрузил `api/index.py` через
+  `importlib` (отрабатывает env-setup + seed + сборка parent-app), прогнал через
+  `TestClient(mod.app)`: `/health` 200, `/api/auth/login demo_doc` → JWT, очередь
+  клиники 200 / 401 без токена, неверный пароль 401, `patient1` логин + загрузка
+  снимка 200 без `raw_score`/`confidence`, загрузка чужого пациента 403 — 9/9
+  PASS. Слим-`requirements.txt` сверен с графом импортов (нет EmailStr/jinja2 и
+  т.п.). Саму сборку/роутинг на стороне Vercel локально проверить нельзя (нет
+  Docker/Vercel CLI) — подтвердится первым деплоем; конфиг сделан по
+  каноничному паттерну FastAPI-on-Vercel.

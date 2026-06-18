@@ -1,5 +1,13 @@
 {
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "backend/**",
+      "maxDuration": 30
+    }
+  },
   "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index" },
+    { "source": "/health", "destination": "/api/index" },
     { "source": "/", "destination": "/frontend/index.html" },
     { "source": "/patient-pwa", "destination": "/frontend/patient-pwa/index.html" },
     { "source": "/patient-pwa/", "destination": "/frontend/patient-pwa/index.html" },
