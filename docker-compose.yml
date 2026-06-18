@@ -1,0 +1,33 @@
+# One-command demo stack: backend (FastAPI/uvicorn) + frontend (nginx static + API proxy).
+#   docker compose up --build
+# First start generates synthetic demo data, trains the demo model, and seeds
+# demo patients (see backend/entrypoint.sh) — so it is slower than later starts.
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: womenaid-backend
+    environment:
+      # Demo secrets — override both for anything real.
+      WOMENAID_SECRET_KEY: "demo-insecure-change-me"
+      WOMENAID_FILE_ENCRYPTION_KEY: "-ks0xCkFXpxiy5AB1DtXKrDh_Bp0MWA3J0MOq4gA0cE="
+    volumes:
+      - womenaid_data:/data   # persists SQLite DB + model checkpoint across restarts
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    image: nginx:1.27-alpine
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  womenaid_data:

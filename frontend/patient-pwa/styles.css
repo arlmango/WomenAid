@@ -1,0 +1,88 @@
+/* Patient PWA styles — static, cacheable by the service worker.
+   Mirrors the visual language of the main frontend/index.html (brand blue,
+   card layout) but is mobile-first (single column, larger touch targets). */
+:root { color-scheme: light; --brand: #1456c4; }
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  margin: 0;
+  background: #f5f6f8;
+  color: #1c1f23;
+  /* Respect notches / home indicator when installed (standalone display). */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+           env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+main { max-width: 520px; margin: 0 auto; padding: 20px 16px 40px; }
+
+.top-row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px;
+}
+h1 { margin: 0 0 4px; font-size: 1.5rem; }
+.sub { color: #555; margin: 0 0 20px; font-size: .95rem; }
+
+.card {
+  background: #fff; border: 1px solid #e3e6ea; border-radius: 12px;
+  padding: 16px 18px; margin: 14px 0;
+}
+.card h2 { font-size: 1.05rem; margin: 0 0 8px; }
+.warn { background: #fff4f4; border-color: #f3c2c2; }
+
+code { background: #eef0f3; padding: 1px 6px; border-radius: 4px; }
+a { color: var(--brand); }
+
+#health.ok { color: #137333; }
+#health.err { color: #b00020; }
+
+.disclaimer {
+  font-size: .85rem; color: #6b7177; border-top: 1px solid #e3e6ea;
+  margin-top: 24px; padding-top: 14px;
+}
+
+/* --- forms / buttons (touch-friendly sizing) --- */
+.field { margin: 0 0 12px; }
+.field label { display: block; font-size: .85rem; color: #555; margin-bottom: 4px; }
+.field input {
+  width: 100%; padding: 12px 12px; border: 1px solid #d6d9dd;
+  border-radius: 8px; font-size: 1rem;
+}
+button { font: inherit; cursor: pointer; }
+.btn-primary {
+  background: var(--brand); color: #fff; border: none; border-radius: 8px;
+  padding: 12px 18px; font-size: 1rem; width: 100%;
+}
+.btn-primary:disabled { background: #8aa6d6; cursor: not-allowed; }
+.btn-secondary {
+  background: #fff; color: var(--brand); border: 1px solid var(--brand);
+  border-radius: 8px; padding: 8px 14px; font-size: .9rem;
+}
+.btn-secondary:disabled { color: #8aa6d6; border-color: #8aa6d6; cursor: not-allowed; }
+
+.lang-toggle button {
+  background: #fff; border: 1px solid #d6d9dd; padding: 6px 11px;
+  border-radius: 6px; font-size: .8rem; color: #555;
+}
+.lang-toggle button.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+.error-text { color: #b00020; font-size: .85rem; margin: 8px 0 0; }
+.hint-text { color: #6b7177; font-size: .85rem; margin: 8px 0 0; }
+.session-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap;
+}
+
+/* --- offline banner --- */
+#offline-banner {
+  background: #fff8e1; border: 1px solid #f3e0a3; color: #6b5800;
+  border-radius: 8px; padding: 10px 14px; margin: 0 0 12px; font-size: .9rem;
+}
+
+/* --- install affordance --- */
+#install-card .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.ios-steps { margin: 8px 0 0; padding-left: 18px; font-size: .85rem; color: #555; }
+.ios-steps li { margin: 2px 0; }
+
+[hidden] { display: none !important; }

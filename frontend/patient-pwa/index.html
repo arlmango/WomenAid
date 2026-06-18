@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>WomenAId — кабинет пациентки</title>
+
+  <!-- PWA: installable, themed, iOS add-to-home-screen support -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1456c4">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="WomenAId">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <div class="top-row">
+      <h1>WomenAId</h1>
+      <div class="lang-toggle" role="group" aria-label="Язык интерфейса / Интерфейс тілі">
+        <button id="lang-ru" class="active" type="button">RU</button>
+        <button id="lang-kz" type="button">KZ</button>
+      </div>
+    </div>
+    <p class="sub" data-i18n="appSub">Личный кабинет пациентки. Демо.
+       Не является постановкой диагноза.</p>
+
+    <!-- Shown when the device/browser is offline -->
+    <div id="offline-banner" data-i18n="offlineBanner" hidden>
+      Нет соединения. Доступен только интерфейс кабинета; медицинские данные
+      офлайн не сохраняются и недоступны.
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="healthTitle">Статус сервера</h2>
+      <p id="health" data-i18n="healthChecking">проверяем…</p>
+    </div>
+
+    <!-- Login card: shown when no valid session -->
+    <div class="card" id="login-card">
+      <h2 data-i18n="loginTitle">Вход</h2>
+      <form id="login-form">
+        <div class="field">
+          <label for="login-username" data-i18n="usernameLabel">Логин</label>
+          <input id="login-username" name="username" type="text"
+                 autocomplete="username" autocapitalize="none" required>
+        </div>
+        <div class="field">
+          <label for="login-password" data-i18n="passwordLabel">Пароль</label>
+          <input id="login-password" name="password" type="password"
+                 autocomplete="current-password" required>
+        </div>
+        <button class="btn-primary" type="submit" id="login-submit"
+                data-i18n="loginButton">Войти</button>
+        <p class="error-text" id="login-error" hidden></p>
+      </form>
+    </div>
+
+    <!-- Session card: shown when logged in -->
+    <div class="card" id="session-card" hidden>
+      <div class="session-row">
+        <p style="margin:0">
+          <span data-i18n="welcomeLabel">Вы вошли как</span>
+          <strong id="session-user"></strong>
+        </p>
+        <button class="btn-secondary" id="logout-btn" type="button"
+                data-i18n="logoutButton">Выйти</button>
+      </div>
+    </div>
+
+    <!-- Patient cabinet: shown only for patient sessions -->
+    <div class="card" id="patient-card" hidden>
+      <h2 data-i18n="cabinetTitle">Ваш кабинет</h2>
+      <p data-i18n="cabinetStubText">Это демонстрационный кабинет пациентки.
+         Разделы со скринингом, симптомами и результатами пока не реализованы.</p>
+    </div>
+
+    <!-- Non-patient notice: a clinician/admin landed on the patient PWA -->
+    <div class="card warn" id="clinician-card" hidden>
+      <p data-i18n="clinicianNotice">Это кабинет пациентки. Кабинет врача —
+         отдельное десктоп-приложение.</p>
+      <p><a href="../" data-i18n="clinicianLink">Перейти в кабинет врача</a></p>
+    </div>
+
+    <!-- Add-to-home-screen affordance -->
+    <div class="card" id="install-card" hidden>
+      <h2 data-i18n="installTitle">Установить приложение</h2>
+      <p class="hint-text" data-i18n="installText">Добавьте кабинет на домашний
+         экран телефона, чтобы открывать его как обычное приложение.</p>
+      <div class="row">
+        <button class="btn-secondary" id="install-btn" type="button" hidden
+                data-i18n="installButton">Добавить на домашний экран</button>
+      </div>
+      <ol class="ios-steps" id="ios-steps" hidden>
+        <li data-i18n="iosStep1">Нажмите кнопку «Поделиться» в Safari.</li>
+        <li data-i18n="iosStep2">Выберите «На экран Домой».</li>
+        <li data-i18n="iosStep3">Подтвердите — «Добавить».</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="demoAccessTitle">Демо-доступ</h2>
+      <p><span data-i18n="demoPatientLabel">Пароль демо-пациенток:</span>
+         <code>demo1234</code></p>
+    </div>
+
+    <div class="card warn">
+      <h2 data-i18n="modelStatusTitle">Статус модели</h2>
+      <p>Модель обучена на <strong>синтетических</strong> данных и
+         <strong>не прошла клиническую валидацию</strong>
+         (<code>NOT_CLINICALLY_VALIDATED</code>). Только для демонстрации.</p>
+    </div>
+
+    <p class="disclaimer">Результаты сформированы AI-системой поддержки принятия
+       решений. Не являются диагнозом. Требуют подтверждения врача.</p>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+*.db
+.claude-flow/
+# ML artifacts / demo data
+*.joblib
+*.npz
+checkpoints/
+data/
