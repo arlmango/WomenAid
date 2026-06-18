@@ -6,8 +6,8 @@
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index" },
-    { "source": "/health", "destination": "/api/index" },
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/health", "destination": "/api" },
     { "source": "/", "destination": "/frontend/index.html" },
     { "source": "/patient-pwa", "destination": "/frontend/patient-pwa/index.html" },
     { "source": "/patient-pwa/", "destination": "/frontend/patient-pwa/index.html" },
