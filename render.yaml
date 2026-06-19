@@ -13,7 +13,7 @@
 #      by design — encryption-at-rest is never silently skipped).
 #
 # After deploy the app is at https://<service>.onrender.com
-#   /              -> doctor cabinet     /patient-pwa/ -> patient PWA
+#   /clinic  -> doctor cabinet     /patient -> patient PWA
 #   demo login: demo_doc / demo1234
 services:
   - type: web

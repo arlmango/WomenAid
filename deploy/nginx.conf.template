@@ -11,7 +11,7 @@ server {
     index index.html;
 
     # Don't let the browser hard-cache the service worker — so PWA updates ship.
-    location = /patient-pwa/sw.js {
+    location = /sw.js {
         add_header Cache-Control "no-cache";
         try_files $uri =404;
     }
@@ -29,7 +29,7 @@ server {
     location = /openapi.json  { proxy_pass http://127.0.0.1:8000/openapi.json; }
     location /docs            { proxy_pass http://127.0.0.1:8000/docs; }
 
-    # Static frontend (doctor cabinet at /, patient PWA at /patient-pwa/).
+    # SPA fallback (client-side routing: /clinic, /patient/*, ...).
     location / {
         try_files $uri $uri/ /index.html;
     }

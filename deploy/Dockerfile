@@ -7,6 +7,15 @@
 #   docker build -f deploy/Dockerfile -t womenaid .
 #   docker run -p 8080:8080 -v womenaid_data:/data \
 #     -e WOMENAID_SECRET_KEY=... -e WOMENAID_FILE_ENCRYPTION_KEY=... womenaid
+
+# Stage 1: build the Vite SPA (kept separate so the final image has no Node).
+FROM node:20-alpine AS frontend-build
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm install
+COPY frontend/ .
+RUN npm run build
+
 FROM python:3.12-slim
 
 # Runtime system deps:
@@ -28,10 +37,11 @@ WORKDIR /app
 COPY backend/requirements.txt /app/backend/requirements.txt
 RUN pip install --no-cache-dir -r /app/backend/requirements.txt
 
-# App, demo scripts, static frontend, and the deploy glue.
+# App, demo scripts, built frontend (from the build stage above), and the
+# deploy glue.
 COPY backend/ /app/backend/
 COPY scripts/ /app/scripts/
-COPY frontend/ /app/frontend/
+COPY --from=frontend-build /app/frontend/dist /app/frontend
 COPY deploy/nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY deploy/entrypoint.sh /app/deploy/entrypoint.sh
 RUN chmod +x /app/deploy/entrypoint.sh

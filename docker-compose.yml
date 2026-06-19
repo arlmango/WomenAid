@@ -19,11 +19,13 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: nginx:1.27-alpine
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: womenaid-frontend
     depends_on:
       - backend
     volumes:
-      - ./frontend:/usr/share/nginx/html:ro
       - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
       - "8080:80"

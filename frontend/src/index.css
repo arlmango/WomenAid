@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/* WomenAId design tokens — ported from the old static frontend's rose
+   palette (frontend/index.html) so the rewrite keeps the same brand look. */
+@theme {
+  --color-bg: #fdf6f9;
+  --color-surface: #ffffff;
+  --color-surface-2: #fef0f5;
+  --color-surface-3: #fce8f0;
+  --color-rose: #e8779a;
+  --color-rose-deep: #c45a7f;
+  --color-rose-pale: #f7c5d8;
+  --color-rose-bg: #fde8f1;
+  --color-blush: #f2a8c0;
+  --color-lavender: #c4a8d4;
+  --color-lavender-bg: #f0e8f7;
+  --color-peach: #f0b8a0;
+  --color-peach-bg: #fdeee8;
+  --color-mint: #a8cebc;
+  --color-mint-bg: #e8f5ee;
+  --color-ink: #3d2535;
+  --color-ink-soft: #8b6070;
+  --color-ink-muted: #b8909a;
+  --color-line: #f0d8e4;
+  --color-urgent: #d45c7a;
+  --color-urgent-bg: #fdeaee;
+
+  --font-serif: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --font-sans: "DM Sans", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  --radius-card: 18px;
+  --radius-btn: 12px;
+  --radius-input: 10px;
+
+  --shadow-btn: 0 4px 14px #e877994a;
+  --shadow-btn-hover: 0 6px 20px #e8779966;
+  --shadow-card-hover: 0 2px 16px #e877991a;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}

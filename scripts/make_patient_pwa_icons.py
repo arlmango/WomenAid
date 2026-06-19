@@ -22,7 +22,7 @@ from PIL import Image, ImageDraw
 
 BRAND_BLUE = (20, 86, 196, 255)   # #1456c4 — matches manifest theme_color
 WHITE = (255, 255, 255, 255)
-OUT_DIR = Path(__file__).resolve().parent.parent / "frontend" / "patient-pwa" / "icons"
+OUT_DIR = Path(__file__).resolve().parent.parent / "frontend" / "public" / "icons"
 
 
 def _draw_w(draw: ImageDraw.ImageDraw, size: int, inset: float) -> None:

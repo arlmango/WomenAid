@@ -12,7 +12,9 @@ backend (see deploy/Dockerfile + render.yaml).
 Routing (configured in vercel.json):
     /api/*   -> this function, which mounts the real API under /api
     /health  -> this function (lightweight liveness)
-    /*       -> static frontend (frontend/, served by Vercel's CDN)
+    /*       -> the built SPA (frontend/dist/, built by vercel.json's
+               buildCommand and served by Vercel's CDN, with an index.html
+               fallback for client-side routing)
 The frontend already calls /api/... and /health, so no frontend changes needed.
 """
 from __future__ import annotations
