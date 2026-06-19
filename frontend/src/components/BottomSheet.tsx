@@ -26,7 +26,7 @@ export function BottomSheet({
           onClick={onClose}
         >
           <motion.div
-            className="w-full max-w-md rounded-t-card bg-surface p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-card-hover"
+            className="w-full max-w-md rounded-t-card border border-white/60 bg-white/90 p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-soft backdrop-blur-xl"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}

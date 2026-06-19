@@ -21,7 +21,7 @@ export function PatientSchedule() {
       {loading ? (
         <SkeletonCard />
       ) : (
-        <div className="rounded-card border border-line bg-surface p-5 text-center text-ink-soft">
+        <div className="rounded-card border border-white/60 bg-white/80 p-5 text-center text-ink-soft shadow-soft backdrop-blur-sm">
           <p className="mb-1 text-3xl" aria-hidden>
             📅
           </p>

@@ -80,7 +80,7 @@ export function PatientUpload() {
     <div className="space-y-4">
       <h1 className="font-serif text-xl text-ink">{t("uploadTitle")}</h1>
 
-      <div className="rounded-card border border-line bg-surface p-5">
+      <div className="rounded-card border border-white/60 bg-white/80 p-5 shadow-soft backdrop-blur-sm">
         <input
           ref={fileInputRef}
           type="file"

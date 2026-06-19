@@ -14,7 +14,7 @@ export function ModelStatusBadge({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <div className="rounded-card border border-lavender-bg bg-[#f7f2ff] p-4">
+    <div className="rounded-card border border-white/60 bg-[#f7f2ff]/80 p-4 shadow-soft backdrop-blur-sm">
       <span className="mb-2 inline-flex items-center rounded-full bg-lavender-bg px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-[#6a3d8a]">
         {t("modelStatusBadge")}
       </span>

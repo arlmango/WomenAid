@@ -95,6 +95,17 @@ export async function login(username: string, password: string): Promise<{ acces
   });
 }
 
+// POST /auth/register is JSON (see backend/app/schemas/auth.py::RegisterRequest)
+// and always creates a patient account — there is no role field to send.
+// Returns a token, same as login (auto-login after signup).
+export function register(username: string, password: string): Promise<{ access_token: string }> {
+  return apiPost(
+    "/api/auth/register",
+    { username, password },
+    { silent: true }, // RegisterPage shows its own inline error, not a toast
+  );
+}
+
 // Fetches a PDF with the bearer token attached and returns a blob: URL the
 // caller can window.open() — a plain <a href> can't carry Authorization.
 export async function fetchPdfObjectUrl(path: string): Promise<string> {

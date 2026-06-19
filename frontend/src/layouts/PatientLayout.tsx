@@ -20,7 +20,7 @@ export function PatientLayout() {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col bg-bg">
-      <header className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b border-line bg-surface px-4 py-3">
+      <header className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b border-white/60 bg-white/70 px-4 py-3 shadow-soft backdrop-blur-xl">
         <div className="flex items-center gap-2">
           <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-rose to-blush font-serif text-sm text-white">
             W
@@ -50,7 +50,7 @@ export function PatientLayout() {
         </AnimatePresence>
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[430px] border-t border-line bg-surface pb-[env(safe-area-inset-bottom)]">
+      <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[430px] border-t border-white/60 bg-white/75 pb-[env(safe-area-inset-bottom)] shadow-soft backdrop-blur-xl">
         <ul className="grid grid-cols-5">
           {TABS.map((tab) => (
             <li key={tab.to}>

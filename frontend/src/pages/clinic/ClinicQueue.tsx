@@ -37,10 +37,10 @@ export function ClinicQueue() {
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-card border border-line">
+      <div className="overflow-x-auto rounded-card border border-white/60 bg-white/80 shadow-soft backdrop-blur-sm">
         <table className="w-full min-w-[760px] border-collapse text-sm">
           <thead>
-            <tr className="bg-surface-2 text-left text-xs font-semibold uppercase tracking-wide text-ink-soft">
+            <tr className="bg-surface-2/70 text-left text-xs font-semibold uppercase tracking-wide text-ink-soft">
               {COLUMNS.map((col) => (
                 <th key={col} className="whitespace-nowrap px-4 py-2.5">
                   {t(col)}

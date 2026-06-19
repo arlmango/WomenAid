@@ -55,7 +55,7 @@ export function PatientConsent() {
     <div className="space-y-4">
       <h1 className="font-serif text-xl text-ink">{t("navConsent")}</h1>
 
-      <div className="rounded-card border border-line bg-surface p-5">
+      <div className="rounded-card border border-white/60 bg-white/80 p-5 shadow-soft backdrop-blur-sm">
         <p className="mb-4 text-sm text-ink-soft">{t("consentText")}</p>
         <p className="mb-4 text-sm font-semibold">
           {given ? (

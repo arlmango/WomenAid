@@ -14,7 +14,7 @@ export function PatientHome() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-card border border-line bg-surface p-5">
+      <div className="rounded-card border border-white/60 bg-white/80 p-5 shadow-soft backdrop-blur-sm">
         <p className="text-sm text-ink-soft">
           AI-триаж снимков шейки матки — инструмент поддержки принятия решений для медперсонала.
           Не постановка диагноза. Демо.
@@ -26,7 +26,7 @@ export function PatientHome() {
           <Link
             key={card.to}
             to={card.to}
-            className="flex flex-col items-center gap-2 rounded-card border border-line bg-surface p-5 text-center transition-colors hover:border-rose-pale hover:shadow-card-hover"
+            className="flex flex-col items-center gap-2 rounded-card border border-white/60 bg-white/80 p-5 text-center shadow-soft backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-rose-pale hover:shadow-soft-hover"
           >
             <span className="text-2xl" aria-hidden>
               {card.icon}

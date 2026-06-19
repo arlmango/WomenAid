@@ -3,9 +3,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { toast, type ToastMessage } from "../lib/toast";
 
 const KIND_STYLES: Record<ToastMessage["kind"], string> = {
-  success: "border-mint bg-mint-bg text-ink",
-  error: "border-urgent bg-urgent-bg text-urgent",
-  info: "border-rose-pale bg-rose-bg text-ink",
+  success: "border-mint/50 bg-mint-bg/90 text-ink",
+  error: "border-urgent/40 bg-urgent-bg/90 text-urgent",
+  info: "border-rose-pale/60 bg-rose-bg/90 text-ink",
 };
 
 export function Toaster() {
@@ -23,7 +23,7 @@ export function Toaster() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 420, damping: 32 }}
-            className={`pointer-events-auto w-full max-w-sm rounded-btn border px-4 py-3 text-sm font-medium shadow-card-hover ${KIND_STYLES[t.kind]}`}
+            className={`pointer-events-auto w-full max-w-sm rounded-card border px-4 py-3 text-sm font-medium shadow-soft backdrop-blur-xl ${KIND_STYLES[t.kind]}`}
             onClick={() => toast.dismiss(t.id)}
             role="status"
           >

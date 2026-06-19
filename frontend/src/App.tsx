@@ -11,6 +11,7 @@ import { AuthLayout } from "./layouts/AuthLayout";
 import { PatientLayout } from "./layouts/PatientLayout";
 
 import { LoginPage } from "./pages/auth/LoginPage";
+import { RegisterPage } from "./pages/auth/RegisterPage";
 import { PatientHome } from "./pages/patient/PatientHome";
 import { PatientUpload } from "./pages/patient/PatientUpload";
 import { PatientSymptoms } from "./pages/patient/PatientSymptoms";
@@ -51,6 +52,7 @@ export function App() {
 
           <Route element={<AuthLayout />}>
             <Route path="/auth" element={<LoginPage />} />
+            <Route path="/auth/register" element={<RegisterPage />} />
           </Route>
 
           <Route
