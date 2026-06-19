@@ -1,5 +1,6 @@
 {
   "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
   "functions": {
     "api/index.py": {
       "includeFiles": "backend/**",
@@ -9,13 +10,7 @@
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/health", "destination": "/api" },
-    { "source": "/assets/(.*)", "destination": "/frontend/dist/assets/$1" },
-    { "source": "/icons/(.*)", "destination": "/frontend/dist/icons/$1" },
-    { "source": "/sw.js", "destination": "/frontend/dist/sw.js" },
-    { "source": "/workbox-(.*).js", "destination": "/frontend/dist/workbox-$1.js" },
-    { "source": "/manifest.webmanifest", "destination": "/frontend/dist/manifest.webmanifest" },
-    { "source": "/registerSW.js", "destination": "/frontend/dist/registerSW.js" },
-    { "source": "/(.*)", "destination": "/frontend/dist/index.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
