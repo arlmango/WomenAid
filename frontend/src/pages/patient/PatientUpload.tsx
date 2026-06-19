@@ -15,7 +15,8 @@ const TRIAGE_VISUALS: Record<string, { Icon: LucideIcon; className: string }> = 
   URGENT_REVIEW: { Icon: AlertTriangle, className: "bg-urgent-bg text-urgent" },
   PRIORITY_REVIEW: { Icon: AlertTriangle, className: "bg-lavender-bg text-[#6a3d8a]" },
   ROUTINE_FOLLOWUP: { Icon: Info, className: "bg-rose-bg text-rose-deep" },
-  INSUFFICIENT_QUALITY: { Icon: ImageOff, className: "bg-peach-bg text-[#8b4a2a]" },
+  PENDING_REVIEW: { Icon: Clock, className: "bg-peach-bg text-[#8b4a2a]" },
+  INSUFFICIENT_QUALITY: { Icon: ImageOff, className: "bg-surface-3 text-ink-soft" },
 };
 const DEFAULT_TRIAGE_VISUAL = { Icon: Clock, className: "bg-surface-3 text-ink-soft" };
 

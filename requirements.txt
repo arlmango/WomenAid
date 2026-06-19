@@ -11,3 +11,4 @@ python-jose[cryptography]
 cryptography
 python-multipart
 reportlab
+Pillow

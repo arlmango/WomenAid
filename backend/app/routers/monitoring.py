@@ -1,14 +1,20 @@
 """Screening/symptom monitoring routes.
 
-ENDPOINTS ARE STUBS — monitoring business logic is not implemented here. This
-module wires up access control and audit logging (patient-card views, consent
-changes), plus placeholder responses.
+Real, deterministic logic — not an AI model. Screening status comes from
+app/models/screening_rules.py::get_screening_status (age + last screening
+date), and symptom red-flagging from the same module's evaluate_symptom
+(keyword match against RED_FLAG_SYMPTOMS). Both are explicitly flagged
+PLACEHOLDER / not-clinically-validated thresholds in that module — this
+router just wires them up; it doesn't add new clinical judgment.
 
 Access rules (CLAUDE.md):
   - /monitoring/clinic/*                  -> clinician/admin only
   - /monitoring/patients/{patient_id}/*   -> clinician/admin, or the patient themselves
 """
 from __future__ import annotations
+
+from collections import Counter
+from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -23,9 +29,21 @@ from app.deps import (
     verify_patient_access,
 )
 from app.models.patient import Patient
+from app.models.risk_assessment import RiskAssessment
+from app.models.screening_rules import (
+    DUE_SOON_WINDOW_DAYS,
+    MAX_ELIGIBLE_AGE,
+    MIN_ELIGIBLE_AGE,
+    SCREENING_INTERVAL_DAYS,
+    age_years,
+    evaluate_symptom,
+    get_screening_status,
+)
+from app.models.symptom import SymptomEntry
 from app.models.user import User
 from app.retention import erase_patient_data
 from app.schemas.audit import ConsentCreateRequest
+from app.schemas.monitoring import SymptomCreateRequest
 
 
 def _get_patient_or_404(db: Session, patient_id: int) -> Patient:
@@ -43,8 +61,28 @@ clinic_router = APIRouter(
 
 
 @clinic_router.get("/overview")
-def clinic_overview() -> dict:
-    return {"stub": True, "detail": "clinic monitoring overview not implemented"}
+def clinic_overview(db: Session = Depends(get_db)) -> dict:
+    """Real aggregate counts — no fabricated numbers, no AI inference."""
+    patients = db.query(Patient).all()
+    screening_counts = Counter(
+        get_screening_status(p.birth_date, p.last_screening_date) for p in patients
+    )
+    consented = sum(1 for p in patients if p.consent_given)
+
+    triage_counts = Counter(
+        label for (label,) in db.query(RiskAssessment.triage_label).all()
+    )
+    active_red_flags = (
+        db.query(SymptomEntry).filter(SymptomEntry.is_red_flag.is_(True)).count()
+    )
+
+    return {
+        "total_patients": len(patients),
+        "consented_patients": consented,
+        "by_screening_status": dict(screening_counts),
+        "by_triage_label": dict(triage_counts),
+        "active_red_flag_symptoms": active_red_flags,
+    }
 
 
 # --- Per-patient, ownership-checked (router-level dep reads {patient_id}) ---
@@ -61,28 +99,98 @@ def patient_card(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
+    patient = _get_patient_or_404(db, patient_id)
     # Audit: who viewed this patient's card (e.g. a clinician opening the record).
     record_audit(db, current_user, "view_patient_card", "patient", patient_id)
-    # STUB.
-    return {"stub": True, "patient_id": patient_id, "detail": "patient card not implemented"}
+    return {
+        "patient_id": patient_id,
+        "full_name": patient.full_name,
+        "age": age_years(patient.birth_date) if patient.birth_date else None,
+        "screening_status": get_screening_status(patient.birth_date, patient.last_screening_date),
+        "consent_given": bool(patient.consent_given),
+    }
 
 
 @patient_router.get("/symptoms")
-def patient_symptoms(patient_id: int) -> dict:
+def patient_symptoms(patient_id: int, db: Session = Depends(get_db)) -> dict:
+    entries = (
+        db.query(SymptomEntry)
+        .filter(SymptomEntry.patient_id == patient_id)
+        .order_by(SymptomEntry.reported_at.desc())
+        .all()
+    )
     return {
-        "stub": True,
         "patient_id": patient_id,
-        "detail": "symptom monitoring not implemented",
-        "symptoms": [],
+        "symptoms": [
+            {
+                "id": e.id,
+                "symptom_text": e.symptom_text,
+                "is_red_flag": e.is_red_flag,
+                "reported_at": e.reported_at.isoformat() if e.reported_at else None,
+            }
+            for e in entries
+        ],
+    }
+
+
+@patient_router.post("/symptoms")
+def log_symptom(
+    patient_id: int,
+    payload: SymptomCreateRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Log one symptom-diary entry. Red-flagging is a deterministic keyword
+    match (app/models/screening_rules.py::evaluate_symptom) — never an AI
+    guess, and a red flag always recommends a doctor regardless of anything
+    else (CLAUDE.md invariant)."""
+    _get_patient_or_404(db, patient_id)
+    verdict = evaluate_symptom(payload.symptom_text)
+
+    entry = SymptomEntry(
+        patient_id=patient_id,
+        symptom_text=payload.symptom_text,
+        is_red_flag=verdict["is_red_flag"],
+    )
+    db.add(entry)
+    db.commit()
+    db.refresh(entry)
+
+    record_audit(
+        db, current_user, "symptom.logged", "patient", patient_id,
+        details={"symptom_entry_id": entry.id, "is_red_flag": entry.is_red_flag},
+    )
+
+    return {
+        "id": entry.id,
+        "symptom_text": entry.symptom_text,
+        "is_red_flag": entry.is_red_flag,
+        "recommendation": verdict["recommendation"],
+        "reported_at": entry.reported_at.isoformat() if entry.reported_at else None,
     }
 
 
 @patient_router.get("/schedule")
-def patient_schedule(patient_id: int) -> dict:
+def patient_schedule(patient_id: int, db: Session = Depends(get_db)) -> dict:
+    patient = _get_patient_or_404(db, patient_id)
+    next_due = (
+        (patient.last_screening_date + timedelta(days=SCREENING_INTERVAL_DAYS)).isoformat()
+        if patient.last_screening_date
+        else None
+    )
     return {
-        "stub": True,
         "patient_id": patient_id,
-        "detail": "screening schedule not implemented",
+        "screening_status": get_screening_status(patient.birth_date, patient.last_screening_date),
+        "last_screening_date": (
+            patient.last_screening_date.isoformat() if patient.last_screening_date else None
+        ),
+        "next_due_date": next_due,
+        # PLACEHOLDER thresholds (not clinically validated) — surfaced for
+        # transparency, see app/models/screening_rules.py.
+        "min_eligible_age": MIN_ELIGIBLE_AGE,
+        "max_eligible_age": MAX_ELIGIBLE_AGE,
+        "screening_interval_days": SCREENING_INTERVAL_DAYS,
+        "due_soon_window_days": DUE_SOON_WINDOW_DAYS,
     }
 
 

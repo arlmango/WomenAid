@@ -26,6 +26,7 @@ from fastapi.testclient import TestClient  # noqa: E402
 from app.db.database import SessionLocal, init_db  # noqa: E402
 from app.main import app  # noqa: E402
 from app.models.patient import Patient  # noqa: E402
+from app.models.risk_assessment import RiskAssessment  # noqa: E402
 from app.models.user import User  # noqa: E402
 from app.security import hash_password  # noqa: E402
 
@@ -50,6 +51,7 @@ def seed() -> None:
         db.add_all([Patient(id=1, full_name="Patient One"),
                     Patient(id=2, full_name="Patient Two")])
         db.flush()
+        db.add(RiskAssessment(id=55, patient_id=1, triage_label="PENDING_REVIEW"))
         db.add_all([
             User(username="admin", hashed_password=hash_password("adminpw"), role="admin"),
             User(username="doc", hashed_password=hash_password("docpw"), role="clinician"),

@@ -7,6 +7,7 @@ python-jose[cryptography]
 cryptography
 python-multipart
 reportlab
+Pillow
 scikit-learn
 numpy
 joblib

@@ -1,12 +1,18 @@
 import { useState } from "react";
-import { Inbox, RefreshCw } from "lucide-react";
+import { AlertTriangle, Clock, Inbox, RefreshCw, Siren, Users } from "lucide-react";
 import { useApiQuery } from "../../lib/useApiQuery";
 import { apiPost, fetchPdfObjectUrl } from "../../lib/api";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { Modal } from "../../components/Modal";
-import { SkeletonRow } from "../../components/Skeleton";
+import { SkeletonRow, SkeletonCard } from "../../components/Skeleton";
 import { toast } from "../../lib/toast";
-import type { QueueItem, QueueResponse, ReviewRequest, ReviewResponse } from "../../types/api";
+import type {
+  ClinicOverviewResponse,
+  QueueItem,
+  QueueResponse,
+  ReviewRequest,
+  ReviewResponse,
+} from "../../types/api";
 
 const COLUMNS = [
   "queueColId",
@@ -18,9 +24,45 @@ const COLUMNS = [
   "queueColCreated",
 ] as const;
 
+const TRIAGE_BADGE: Record<string, string> = {
+  URGENT_REVIEW: "bg-urgent-bg text-urgent",
+  PRIORITY_REVIEW: "bg-lavender-bg text-[#6a3d8a]",
+  PENDING_REVIEW: "bg-peach-bg text-[#8b4a2a]",
+  ROUTINE_FOLLOWUP: "bg-rose-bg text-rose-deep",
+  INSUFFICIENT_QUALITY: "bg-surface-3 text-ink-soft",
+};
+const DEFAULT_TRIAGE_BADGE = "bg-surface-3 text-ink-soft";
+
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  badgeClassName,
+}: {
+  icon: typeof Users;
+  label: string;
+  value: number;
+  badgeClassName: string;
+}) {
+  return (
+    <div className="flex items-center gap-3 rounded-card border border-white/60 bg-white/80 p-4 shadow-soft backdrop-blur-sm">
+      <span className={`grid h-10 w-10 flex-none place-items-center rounded-full ${badgeClassName}`}>
+        <Icon size={18} strokeWidth={2.25} />
+      </span>
+      <div>
+        <p className="text-xl font-semibold text-ink">{value}</p>
+        <p className="text-xs text-ink-soft">{label}</p>
+      </div>
+    </div>
+  );
+}
+
 export function ClinicQueue() {
   const { t } = useLanguage();
   const { data, loading, refetch } = useApiQuery<QueueResponse>("/api/risk-assessment/clinic/queue");
+  const { data: overview, loading: overviewLoading } = useApiQuery<ClinicOverviewResponse>(
+    "/api/monitoring/clinic/overview",
+  );
   const [selected, setSelected] = useState<QueueItem | null>(null);
 
   const items = data?.items ?? [];
@@ -37,6 +79,39 @@ export function ClinicQueue() {
           <RefreshCw size={15} strokeWidth={2.25} />
           {t("queueRefresh")}
         </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {overviewLoading || !overview ? (
+          Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
+        ) : (
+          <>
+            <StatCard
+              icon={Users}
+              label={t("statTotalPatients")}
+              value={overview.total_patients}
+              badgeClassName="bg-mint-bg text-[#2a7055]"
+            />
+            <StatCard
+              icon={Clock}
+              label={t("statPendingReview")}
+              value={overview.by_triage_label.PENDING_REVIEW ?? 0}
+              badgeClassName="bg-peach-bg text-[#8b4a2a]"
+            />
+            <StatCard
+              icon={Siren}
+              label={t("statUrgent")}
+              value={overview.by_triage_label.URGENT_REVIEW ?? 0}
+              badgeClassName="bg-urgent-bg text-urgent"
+            />
+            <StatCard
+              icon={AlertTriangle}
+              label={t("statRedFlags")}
+              value={overview.active_red_flag_symptoms}
+              badgeClassName="bg-lavender-bg text-[#6a3d8a]"
+            />
+          </>
+        )}
       </div>
 
       <div className="overflow-x-auto rounded-card border border-white/60 bg-white/80 shadow-soft backdrop-blur-sm">
@@ -61,10 +136,7 @@ export function ClinicQueue() {
                     <span className="grid h-14 w-14 place-items-center rounded-full bg-lavender-bg text-[#6a3d8a]">
                       <Inbox size={26} strokeWidth={2} />
                     </span>
-                    <div>
-                      <p className="font-medium text-ink">{t("queueEmpty")}</p>
-                      {data?.detail && <p className="mt-1 text-xs text-ink-muted">{data.detail}</p>}
-                    </div>
+                    <p className="font-medium text-ink">{t("queueEmpty")}</p>
                   </div>
                 </td>
               </tr>
@@ -80,7 +152,11 @@ export function ClinicQueue() {
                   <td className="whitespace-nowrap px-4 py-3">{item.id}</td>
                   <td className="whitespace-nowrap px-4 py-3">{item.patient_name ?? `#${item.patient_id}`}</td>
                   <td className="whitespace-nowrap px-4 py-3">
-                    <span className="rounded-full bg-rose-bg px-2 py-0.5 text-xs font-semibold text-rose-deep">
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                        TRIAGE_BADGE[item.triage_label] ?? DEFAULT_TRIAGE_BADGE
+                      }`}
+                    >
                       {item.triage_label}
                     </span>
                   </td>
@@ -166,6 +242,15 @@ function ReviewModal({
               <dd className="font-semibold text-ink">{item.confidence ?? "—"}</dd>
             </div>
           </dl>
+
+          {item.clinician_decision && (
+            <div className="rounded-input bg-mint-bg/60 p-3 text-sm text-ink">
+              <p className="mb-0.5 text-xs font-semibold uppercase tracking-wide text-[#2a7055]">
+                {t("reviewExistingDecision")}
+              </p>
+              {item.clinician_decision}
+            </div>
+          )}
 
           <button
             type="button"

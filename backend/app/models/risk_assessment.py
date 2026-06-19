@@ -14,8 +14,12 @@ from app.db.database import Base
 from app.timeutils import utcnow_naive
 
 # The only allowed triage categories (CLAUDE.md). Never a "diagnosis".
+# PENDING_REVIEW is the honest "no AI ran, awaiting a clinician" state used by
+# the real upload path today (see app/ml/inference.py) — distinct from the
+# other three labels, which a clinician can still set via the review endpoint.
 TRIAGE_LABELS = [
     "INSUFFICIENT_QUALITY",
+    "PENDING_REVIEW",
     "ROUTINE_FOLLOWUP",
     "PRIORITY_REVIEW",
     "URGENT_REVIEW",
@@ -24,10 +28,11 @@ TRIAGE_LABELS = [
 # Until the model is clinically validated, every record is marked as such.
 MODEL_STATUS_NOT_VALIDATED = "NOT_CLINICALLY_VALIDATED"
 DATASET_STATUS_DEMO = "DEMO_SYNTHETIC_NOT_CLINICAL"
-# A real (non-demo) upload was stored, but no model ran — upload() is still a
-# stub (see app/routers/risk_assessment.py). Distinct from DATASET_STATUS_DEMO
-# so a real-patient row never implies a demo model produced its triage_label.
-DATASET_STATUS_NO_INFERENCE = "NO_INFERENCE_STUB"
+# A real upload was stored and ran through the real (non-AI) photo-quality
+# gate in app/ml/image_quality.py — no classifier exists yet, so there is no
+# model output to attribute. Distinct from DATASET_STATUS_DEMO so a real
+# upload's row never implies a (synthetic-trained) model produced its label.
+DATASET_STATUS_NO_INFERENCE = "NO_AI_INFERENCE_QUALITY_GATE_ONLY"
 MODEL_VERSION_DEMO = "demo-rf-0.0"
 
 

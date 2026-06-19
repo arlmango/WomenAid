@@ -1,10 +1,11 @@
 """Risk-assessment routes.
 
-ENDPOINTS ARE STUBS — the triage business logic is NOT implemented here. Per
-CLAUDE.md, triage / red-flag / patient-facing safety messages are a stop-signal
-and must be authored with the clinical team. This module wires up the *access
-control* and *audit logging* the data-protection task requires, plus
-placeholder responses.
+The upload endpoint runs a real (non-AI) photo-quality gate — see
+app/ml/image_quality.py and app/ml/inference.py for why there is no AI
+classifier wired in yet (the only trained model exists, but is fit on
+synthetic random noise unrelated to real images; connecting it would produce
+arbitrary, not-real predictions). Everything else here (queue, review, PDF)
+reads/writes real `risk_assessments` rows — none of it is a stub.
 
 Access rules (CLAUDE.md):
   - /risk-assessment/clinic/*           -> clinician/admin only
@@ -20,6 +21,8 @@ from app.consent import require_active_consent
 from app.db.database import get_db
 from app.deps import get_current_clinician, verify_patient_access
 from app.encryption import FileEncryptionNotConfigured
+from app.ml.image_quality import assess_image_quality
+from app.ml.inference import DISCLAIMER, PENDING_REVIEW_MESSAGE, patient_message_for_quality_failure
 from app.models.patient import Patient
 from app.models.risk_assessment import (
     DATASET_STATUS_NO_INFERENCE,
@@ -32,13 +35,6 @@ from app.pdf_report import build_assessment_report_pdf
 from app.retention import extend_retention
 from app.schemas.audit import ReviewRequest
 from app.storage import save_encrypted_upload
-
-# Disclaimer shown to patients; the real text belongs in app/ml/inference.py.
-_DISCLAIMER = (
-    "Это вспомогательная информация для маршрутизации (decision-support), "
-    "а не медицинский диагноз. Модель не прошла клиническую валидацию. "
-    "Окончательное решение принимает врач."
-)
 
 # --- Clinic-only: full triage queue (WITH scores) is clinician/admin only ---
 clinic_router = APIRouter(
@@ -55,8 +51,31 @@ def clinic_queue(
 ) -> dict:
     # Audit: who opened the triage queue.
     record_audit(db, current_user, "view_clinic_queue", "risk_assessment", None)
-    # STUB. Real queue would include raw_score/confidence — clinician-only by design.
-    return {"stub": True, "detail": "clinic triage queue not implemented", "items": []}
+
+    rows = (
+        db.query(RiskAssessment, Patient)
+        .outerjoin(Patient, Patient.id == RiskAssessment.patient_id)
+        .order_by(RiskAssessment.created_at.desc())
+        .all()
+    )
+    items = [
+        {
+            "id": assessment.id,
+            "patient_id": assessment.patient_id,
+            "patient_name": (patient.full_name if patient else None),
+            "created_at": assessment.created_at.isoformat() if assessment.created_at else None,
+            "triage_label": assessment.triage_label,
+            # Clinician-only fields — never sent from any patient-facing endpoint.
+            "raw_score": assessment.raw_score,
+            "confidence": assessment.confidence,
+            "model_version": assessment.model_version,
+            "model_status": assessment.model_status,
+            "dataset_status": assessment.dataset_status,
+            "clinician_decision": assessment.clinician_decision,
+        }
+        for assessment, patient in rows
+    ]
+    return {"items": items}
 
 
 @clinic_router.post("/review/{assessment_id}")
@@ -66,8 +85,23 @@ def review_assessment(
     current_user: User = Depends(get_current_clinician),
     db: Session = Depends(get_db),
 ) -> dict:
-    # STUB: no assessment records exist yet, so nothing is mutated. The clinician's
-    # review *decision* (their input — not an AI output) is recorded for audit.
+    """Persist a clinician's review decision on a real assessment row.
+
+    The decision is the CLINICIAN's input (a human judgment call), never an
+    AI output — it is stored verbatim in `clinician_decision` and shown on
+    the PDF report.
+    """
+    assessment = db.query(RiskAssessment).filter(RiskAssessment.id == assessment_id).first()
+    if assessment is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Assessment not found")
+
+    assessment.clinician_decision = (
+        f"{review.decision}: {review.note}" if review.note else review.decision
+    )
+    db.add(assessment)
+    db.commit()
+    db.refresh(assessment)
+
     record_audit(
         db,
         current_user,
@@ -76,15 +110,14 @@ def review_assessment(
         assessment_id,
         details={
             "decision": review.decision,
-            "patient_id": review.patient_id,
+            "patient_id": review.patient_id or assessment.patient_id,
             "note": review.note,
         },
     )
     return {
-        "stub": True,
-        "detail": "assessment review recorded (audit only; review logic not implemented)",
-        "assessment_id": assessment_id,
+        "assessment_id": assessment.id,
         "decision": review.decision,
+        "clinician_decision": assessment.clinician_decision,
     }
 
 
@@ -145,25 +178,36 @@ def upload(
 ) -> dict:
     # Consent is a hard technical gate (CLAUDE.md): require_active_consent raises
     # 403 before we get here if the patient has no active consent.
-    # Triage itself is still a STUB (CLAUDE.md stop-signal — not implemented
-    # here). This endpoint now does real, encrypted-at-rest storage of the
-    # uploaded file so retention/erasure have something real to act on.
-    # Response shape respects CLAUDE.md: NO raw_score/confidence is ever returned
-    # here, and the message never implies "you are healthy, no doctor needed".
+    #
+    # Real, working photo-quality gate (app/ml/image_quality.py) — deterministic
+    # classical image statistics, NOT an AI triage classifier (none exists yet,
+    # see that module's docstring). A photo that passes is queued as
+    # PENDING_REVIEW for a clinician; one that fails is INSUFFICIENT_QUALITY
+    # with a specific, actionable reason. Neither path ever implies "you are
+    # healthy" and neither ever returns raw_score/confidence to the patient.
     patient = db.query(Patient).filter(Patient.id == patient_id).first()
     if patient is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found")
 
     data = file.file.read()
+    quality = assess_image_quality(data)
+
     try:
         image_path = save_encrypted_upload(patient_id, data)
     except FileEncryptionNotConfigured as exc:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc))
 
+    if quality.passed:
+        triage_label = "PENDING_REVIEW"
+        patient_message = PENDING_REVIEW_MESSAGE
+    else:
+        triage_label = "INSUFFICIENT_QUALITY"
+        patient_message = patient_message_for_quality_failure(quality)
+
     assessment = RiskAssessment(
         patient_id=patient_id,
         image_path=image_path,
-        triage_label="STUB_UNAVAILABLE",
+        triage_label=triage_label,
         model_version=None,
         model_status=MODEL_STATUS_NOT_VALIDATED,
         dataset_status=DATASET_STATUS_NO_INFERENCE,
@@ -174,15 +218,23 @@ def upload(
     db.commit()
     db.refresh(assessment)
 
-    record_audit(db, current_user, "upload_image", "risk_assessment", assessment.id,
-                 details={"patient_id": patient_id})
+    record_audit(
+        db, current_user, "upload_image", "risk_assessment", assessment.id,
+        details={
+            "patient_id": patient_id,
+            "quality_reason": quality.reason,
+            "quality_metrics": {
+                "width": quality.width,
+                "height": quality.height,
+                "brightness_mean": quality.brightness_mean,
+                "edge_stddev": quality.edge_stddev,
+            },
+        },
+    )
 
     return {
         "patient_id": patient_id,
-        "triage_label": "STUB_UNAVAILABLE",
-        "patient_facing_message": (
-            "Загрузка получена. Результат триажа пока недоступен: модуль не "
-            "реализован. Пожалуйста, обратитесь к вашему врачу."
-        ),
-        "disclaimer": _DISCLAIMER,
+        "triage_label": triage_label,
+        "patient_facing_message": patient_message,
+        "disclaimer": DISCLAIMER,
     }

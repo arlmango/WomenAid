@@ -26,9 +26,7 @@ export interface UploadResult {
 }
 
 // One row of GET /risk-assessment/clinic/queue's `items` (clinician-only —
-// shape mirrors app/models/risk_assessment.py::RiskAssessment). The current
-// backend stub always returns an empty array; this type is what a filled-in
-// implementation would emit.
+// mirrors app/models/risk_assessment.py::RiskAssessment; real DB rows).
 export interface QueueItem {
   id: number;
   patient_id: number;
@@ -44,8 +42,6 @@ export interface QueueItem {
 }
 
 export interface QueueResponse {
-  stub?: boolean;
-  detail?: string;
   items: QueueItem[];
 }
 
@@ -56,16 +52,9 @@ export interface ReviewRequest {
 }
 
 export interface ReviewResponse {
-  stub?: boolean;
-  detail?: string;
   assessment_id: number;
   decision: string;
-}
-
-export interface StubResponse {
-  stub?: boolean;
-  detail?: string;
-  [key: string]: unknown;
+  clinician_decision: string;
 }
 
 export interface ConsentResponse {
@@ -75,4 +64,42 @@ export interface ConsentResponse {
   consent_given: boolean;
   given_at?: string;
   withdrawn?: number;
+}
+
+// GET/POST /monitoring/patients/{id}/symptoms
+export interface SymptomEntry {
+  id: number;
+  symptom_text: string;
+  is_red_flag: boolean;
+  reported_at: string;
+}
+
+export interface SymptomsResponse {
+  patient_id: number;
+  symptoms: SymptomEntry[];
+}
+
+export interface LogSymptomResponse extends SymptomEntry {
+  recommendation: string;
+}
+
+// GET /monitoring/patients/{id}/schedule
+export interface ScheduleResponse {
+  patient_id: number;
+  screening_status: string;
+  last_screening_date: string | null;
+  next_due_date: string | null;
+  min_eligible_age: number;
+  max_eligible_age: number;
+  screening_interval_days: number;
+  due_soon_window_days: number;
+}
+
+// GET /monitoring/clinic/overview (clinician/admin-only)
+export interface ClinicOverviewResponse {
+  total_patients: number;
+  consented_patients: number;
+  by_screening_status: Record<string, number>;
+  by_triage_label: Record<string, number>;
+  active_red_flag_symptoms: number;
 }
