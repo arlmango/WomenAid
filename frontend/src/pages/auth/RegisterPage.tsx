@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { KeyRound, Lock, LogIn, User, UserPlus } from "lucide-react";
 import { register, ApiError } from "../../lib/api";
 import { useAuth, homePathForRole } from "../../lib/auth";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { FieldInput } from "../../components/FieldInput";
 
 // Always creates a `patient` account (see backend/app/routers/auth.py —
 // /auth/register never accepts a role). There is no role picker here on
@@ -49,58 +51,49 @@ export function RegisterPage() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className="rounded-card border border-white/60 bg-white/80 p-6 shadow-soft backdrop-blur-xl"
+      className="rounded-card border border-white/60 bg-white/80 p-7 shadow-soft-hover backdrop-blur-xl"
     >
-      <h2 className="mb-4 font-serif text-xl text-ink">{t("registerTitle")}</h2>
+      <div className="mb-5 flex flex-col items-center text-center">
+        <span className="mb-3 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-rose to-blush text-white shadow-btn">
+          <UserPlus size={22} strokeWidth={2.25} />
+        </span>
+        <h2 className="font-serif text-2xl text-ink">{t("registerTitle")}</h2>
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-3.5">
-        <div>
-          <label htmlFor="reg-username" className="mb-1.5 block text-xs font-medium text-ink-soft">
-            {t("usernameLabel")}
-          </label>
-          <input
-            id="reg-username"
-            name="username"
-            type="text"
-            autoComplete="username"
-            required
-            minLength={3}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full rounded-input border-[1.5px] border-line bg-[#fffafc] px-3.5 py-2.5 text-base text-ink focus:border-rose focus:outline-none focus:ring-3 focus:ring-rose/10"
-          />
-        </div>
-        <div>
-          <label htmlFor="reg-password" className="mb-1.5 block text-xs font-medium text-ink-soft">
-            {t("passwordLabel")}
-          </label>
-          <input
-            id="reg-password"
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            required
-            minLength={8}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-input border-[1.5px] border-line bg-[#fffafc] px-3.5 py-2.5 text-base text-ink focus:border-rose focus:outline-none focus:ring-3 focus:ring-rose/10"
-          />
-        </div>
-        <div>
-          <label htmlFor="reg-confirm" className="mb-1.5 block text-xs font-medium text-ink-soft">
-            {t("confirmPasswordLabel")}
-          </label>
-          <input
-            id="reg-confirm"
-            name="confirmPassword"
-            type="password"
-            autoComplete="new-password"
-            required
-            minLength={8}
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full rounded-input border-[1.5px] border-line bg-[#fffafc] px-3.5 py-2.5 text-base text-ink focus:border-rose focus:outline-none focus:ring-3 focus:ring-rose/10"
-          />
-        </div>
+        <FieldInput
+          id="reg-username"
+          label={t("usernameLabel")}
+          icon={User}
+          type="text"
+          autoComplete="username"
+          required
+          minLength={3}
+          value={username}
+          onChange={setUsername}
+        />
+        <FieldInput
+          id="reg-password"
+          label={t("passwordLabel")}
+          icon={Lock}
+          type="password"
+          autoComplete="new-password"
+          required
+          minLength={8}
+          value={password}
+          onChange={setPassword}
+        />
+        <FieldInput
+          id="reg-confirm"
+          label={t("confirmPasswordLabel")}
+          icon={KeyRound}
+          type="password"
+          autoComplete="new-password"
+          required
+          minLength={8}
+          value={confirmPassword}
+          onChange={setConfirmPassword}
+        />
         <button
           type="submit"
           disabled={busy}
@@ -111,13 +104,22 @@ export function RegisterPage() {
         {error && <p className="text-sm text-urgent">{error}</p>}
       </form>
 
-      <p className="mt-4 text-center text-sm text-ink-soft">
-        {t("haveAccountAlready")}{" "}
-        <Link to="/auth" className="font-semibold text-rose-deep hover:underline">
-          {t("loginLink")}
-        </Link>
-      </p>
-      <p className="mt-3 border-t border-line pt-3 text-xs leading-relaxed text-ink-muted">
+      <div className="my-5 flex items-center gap-3">
+        <span className="h-px flex-1 bg-line" />
+        <span className="text-xs font-medium text-ink-muted">{t("haveAccountAlready")}</span>
+        <span className="h-px flex-1 bg-line" />
+      </div>
+
+      <button
+        type="button"
+        onClick={() => navigate("/auth")}
+        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-btn border-[1.5px] border-rose-pale bg-white text-sm font-semibold text-rose-deep transition-colors hover:bg-rose-bg"
+      >
+        <LogIn size={17} strokeWidth={2.25} />
+        {t("loginLink")}
+      </button>
+
+      <p className="mt-4 border-t border-line pt-3 text-xs leading-relaxed text-ink-muted">
         {t("registerNote")}
       </p>
     </motion.div>

@@ -1,7 +1,9 @@
+import { NotebookText } from "lucide-react";
 import { useAuth } from "../../lib/auth";
 import { useApiQuery } from "../../lib/useApiQuery";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { SkeletonCard } from "../../components/Skeleton";
+import { EmptyState } from "../../components/EmptyState";
 import type { StubResponse } from "../../types/api";
 
 // GET /monitoring/patients/{id}/symptoms is an intentional backend STUB
@@ -21,15 +23,12 @@ export function PatientSymptoms() {
       {loading ? (
         <SkeletonCard />
       ) : (
-        <div className="rounded-card border border-white/60 bg-white/80 p-5 text-center text-ink-soft shadow-soft backdrop-blur-sm">
-          <p className="mb-1 text-3xl" aria-hidden>
-            📝
-          </p>
-          <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">
-            {t("stubNotice")}
-          </p>
-          <p className="mt-1 text-sm">{data?.detail ?? "—"}</p>
-        </div>
+        <EmptyState
+          icon={NotebookText}
+          caption={t("stubNotice")}
+          detail={typeof data?.detail === "string" ? data.detail : "—"}
+          badgeClassName="bg-lavender-bg text-[#6a3d8a]"
+        />
       )}
     </div>
   );

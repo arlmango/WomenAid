@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Inbox, RefreshCw } from "lucide-react";
 import { useApiQuery } from "../../lib/useApiQuery";
 import { apiPost, fetchPdfObjectUrl } from "../../lib/api";
 import { useLanguage } from "../../i18n/LanguageContext";
@@ -31,8 +32,9 @@ export function ClinicQueue() {
         <button
           type="button"
           onClick={refetch}
-          className="rounded-btn border border-rose-pale px-3.5 py-2 text-sm font-semibold text-rose-deep hover:bg-rose-bg"
+          className="flex items-center gap-2 rounded-btn border border-rose-pale px-3.5 py-2 text-sm font-semibold text-rose-deep hover:bg-rose-bg"
         >
+          <RefreshCw size={15} strokeWidth={2.25} />
           {t("queueRefresh")}
         </button>
       </div>
@@ -54,9 +56,16 @@ export function ClinicQueue() {
 
             {!loading && items.length === 0 && (
               <tr>
-                <td colSpan={COLUMNS.length} className="px-4 py-10 text-center text-ink-muted">
-                  {t("queueEmpty")}
-                  {data?.detail && <div className="mt-1 text-xs">{data.detail}</div>}
+                <td colSpan={COLUMNS.length} className="px-4 py-16">
+                  <div className="flex flex-col items-center gap-3 text-center">
+                    <span className="grid h-14 w-14 place-items-center rounded-full bg-lavender-bg text-[#6a3d8a]">
+                      <Inbox size={26} strokeWidth={2} />
+                    </span>
+                    <div>
+                      <p className="font-medium text-ink">{t("queueEmpty")}</p>
+                      {data?.detail && <p className="mt-1 text-xs text-ink-muted">{data.detail}</p>}
+                    </div>
+                  </div>
                 </td>
               </tr>
             )}

@@ -1,15 +1,17 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { ClipboardList } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
 import { useAuth } from "../lib/auth";
 import { PageTransition } from "../components/PageTransition";
 import { ModelStatusBadge } from "../components/ModelStatusBadge";
 import { LanguageToggle } from "../components/LanguageToggle";
+import { GradientBackdrop } from "../components/GradientBackdrop";
 
 // Single nav item today (the clinic cabinet is scoped to the triage queue —
 // see the plan this app was built from); structured as a list so adding a
 // second section later is a one-line change, not a layout rewrite.
-const NAV = [{ to: "/clinic", icon: "🗂️", labelKey: "queueTitle" as const, end: true }];
+const NAV = [{ to: "/clinic", Icon: ClipboardList, labelKey: "queueTitle" as const, end: true }];
 
 export function ClinicLayout() {
   const { t } = useLanguage();
@@ -17,7 +19,9 @@ export function ClinicLayout() {
   const location = useLocation();
 
   return (
-    <div className="flex min-h-screen bg-bg">
+    <div className="flex min-h-screen">
+      <GradientBackdrop />
+
       <aside className="sticky top-0 flex h-screen w-60 flex-none flex-col border-r border-white/60 bg-white/70 px-4 py-5 shadow-soft backdrop-blur-xl">
         <div className="mb-6 flex items-center gap-2.5 px-1">
           <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-rose to-blush font-serif text-lg text-white shadow-btn">
@@ -32,20 +36,31 @@ export function ClinicLayout() {
         <nav className="flex-1">
           <ul className="space-y-1">
             {NAV.map((item) => (
-              <li key={item.to}>
+              <li key={item.to} className="relative">
                 <NavLink
                   to={item.to}
                   end={item.end}
-                  className={({ isActive }) =>
-                    `flex items-center gap-2.5 rounded-btn px-3 py-2.5 text-sm font-medium transition-colors ${
-                      isActive
-                        ? "bg-rose-bg text-rose-deep shadow-soft"
-                        : "text-ink-soft hover:bg-surface-2"
-                    }`
-                  }
+                  className="relative flex items-center gap-2.5 rounded-btn px-3 py-2.5 text-sm font-medium"
                 >
-                  <span aria-hidden>{item.icon}</span>
-                  {t(item.labelKey)}
+                  {({ isActive }) => (
+                    <>
+                      {isActive && (
+                        <motion.span
+                          layoutId="clinic-nav-indicator"
+                          className="absolute inset-0 rounded-btn bg-rose-bg shadow-soft"
+                          transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                        />
+                      )}
+                      <item.Icon
+                        size={18}
+                        strokeWidth={2.25}
+                        className={`relative z-10 ${isActive ? "text-rose-deep" : "text-ink-soft"}`}
+                      />
+                      <span className={`relative z-10 ${isActive ? "text-rose-deep" : "text-ink-soft"}`}>
+                        {t(item.labelKey)}
+                      </span>
+                    </>
+                  )}
                 </NavLink>
               </li>
             ))}

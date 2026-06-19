@@ -1,11 +1,23 @@
 import { useRef, useState, type ChangeEvent } from "react";
 import { motion } from "framer-motion";
+import { AlertTriangle, Camera, FileImage, Info, ImageOff, Clock, type LucideIcon } from "lucide-react";
 import { apiPost, ApiError } from "../../lib/api";
 import { useAuth } from "../../lib/auth";
 import { getConsentFlag, setConsentFlag } from "../../lib/consentFlag";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { BottomSheet } from "../../components/BottomSheet";
 import type { ConsentResponse, UploadResult } from "../../types/api";
+
+// Purely presentational mapping for the fixed TRIAGE_LABELS enum (see
+// backend/app/models/risk_assessment.py) — chooses an icon/color, never
+// changes or infers meaning beyond the label the backend already sent.
+const TRIAGE_VISUALS: Record<string, { Icon: LucideIcon; className: string }> = {
+  URGENT_REVIEW: { Icon: AlertTriangle, className: "bg-urgent-bg text-urgent" },
+  PRIORITY_REVIEW: { Icon: AlertTriangle, className: "bg-lavender-bg text-[#6a3d8a]" },
+  ROUTINE_FOLLOWUP: { Icon: Info, className: "bg-rose-bg text-rose-deep" },
+  INSUFFICIENT_QUALITY: { Icon: ImageOff, className: "bg-peach-bg text-[#8b4a2a]" },
+};
+const DEFAULT_TRIAGE_VISUAL = { Icon: Clock, className: "bg-surface-3 text-ink-soft" };
 
 export function PatientUpload() {
   const { t } = useLanguage();
@@ -94,15 +106,21 @@ export function PatientUpload() {
           <button
             type="button"
             onClick={handlePickFile}
-            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-btn bg-gradient-to-br from-rose to-blush px-5 font-semibold text-white shadow-btn hover:shadow-btn-hover"
+            className="flex w-full flex-col items-center gap-2.5 rounded-card border-2 border-dashed border-rose-pale bg-rose-bg/40 px-5 py-8 text-center transition-colors hover:bg-rose-bg/70"
           >
-            📷 {t("uploadButton")}
+            <span className="grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-rose to-blush text-white shadow-btn">
+              <Camera size={22} strokeWidth={2.25} />
+            </span>
+            <span className="font-semibold text-rose-deep">{t("uploadButton")}</span>
           </button>
         )}
 
         {file && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
-            <p className="truncate text-sm text-ink-soft">{file.name}</p>
+            <div className="flex items-center gap-2.5 rounded-input bg-surface-2 px-3.5 py-2.5">
+              <FileImage size={18} className="flex-none text-rose-deep" />
+              <p className="truncate text-sm text-ink-soft">{file.name}</p>
+            </div>
             <button
               type="button"
               disabled={uploading}
@@ -114,22 +132,33 @@ export function PatientUpload() {
           </motion.div>
         )}
 
-        {result && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-3"
-          >
-            <h2 className="font-serif text-lg text-ink">{t("uploadResultTitle")}</h2>
-            <span className="inline-flex items-center rounded-full bg-rose-bg px-2.5 py-1 text-xs font-semibold text-rose-deep">
-              {result.triage_label}
-            </span>
-            <div className="rounded-input border-l-3 border-rose-pale bg-surface-2 p-3 text-sm text-ink">
-              {result.patient_facing_message}
-            </div>
-            <p className="text-xs leading-relaxed text-ink-soft">{result.disclaimer}</p>
-          </motion.div>
-        )}
+        {result &&
+          (() => {
+            const visual = TRIAGE_VISUALS[result.triage_label] ?? DEFAULT_TRIAGE_VISUAL;
+            return (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-3"
+              >
+                <div className="flex items-center gap-3">
+                  <span className={`grid h-11 w-11 flex-none place-items-center rounded-full ${visual.className}`}>
+                    <visual.Icon size={20} strokeWidth={2.25} />
+                  </span>
+                  <div>
+                    <h2 className="font-serif text-lg text-ink">{t("uploadResultTitle")}</h2>
+                    <span className="inline-flex items-center rounded-full bg-rose-bg px-2.5 py-0.5 text-xs font-semibold text-rose-deep">
+                      {result.triage_label}
+                    </span>
+                  </div>
+                </div>
+                <div className="rounded-input border-l-3 border-rose-pale bg-surface-2 p-3 text-sm text-ink">
+                  {result.patient_facing_message}
+                </div>
+                <p className="text-xs leading-relaxed text-ink-soft">{result.disclaimer}</p>
+              </motion.div>
+            );
+          })()}
       </div>
 
       <BottomSheet

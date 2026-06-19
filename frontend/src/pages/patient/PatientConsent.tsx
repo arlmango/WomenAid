@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CheckCircle2, ShieldQuestion } from "lucide-react";
 import { apiPost } from "../../lib/api";
 import { useAuth } from "../../lib/auth";
 import { getConsentFlag, setConsentFlag } from "../../lib/consentFlag";
@@ -56,14 +57,19 @@ export function PatientConsent() {
       <h1 className="font-serif text-xl text-ink">{t("navConsent")}</h1>
 
       <div className="rounded-card border border-white/60 bg-white/80 p-5 shadow-soft backdrop-blur-sm">
+        <div className="mb-4 flex items-center gap-3">
+          <span
+            className={`grid h-11 w-11 flex-none place-items-center rounded-full ${
+              given ? "bg-mint-bg text-[#2a7055]" : "bg-surface-3 text-ink-muted"
+            }`}
+          >
+            {given ? <CheckCircle2 size={20} strokeWidth={2.25} /> : <ShieldQuestion size={20} strokeWidth={2.25} />}
+          </span>
+          <p className="text-sm font-semibold text-ink">
+            {given ? t("consentGiven") : t("consentRequiredTitle")}
+          </p>
+        </div>
         <p className="mb-4 text-sm text-ink-soft">{t("consentText")}</p>
-        <p className="mb-4 text-sm font-semibold">
-          {given ? (
-            <span className="text-mint">✓ {t("consentGiven")}</span>
-          ) : (
-            <span className="text-ink-muted">— {t("consentRequiredTitle")}</span>
-          )}
-        </p>
         {given ? (
           <button
             type="button"
