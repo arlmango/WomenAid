@@ -4,15 +4,16 @@ import { MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
 // Abstract floating blob — deliberately NOT a medical icon (no cross, no
-// cell, no organ). A soft deformed sphere whose color drifts through the
-// brand gradient (pink -> violet -> indigo), auto-rotating slowly with a
-// gentle mouse-parallax tilt (not drag). No postprocessing/bloom — keeps
-// this cheap enough for the Lighthouse mobile budget.
+// cell, no organ). A soft deformed sphere whose color drifts through a calm
+// teal/emerald/cyan gradient, auto-rotating slowly with a gentle
+// mouse-parallax tilt (not drag). No postprocessing/bloom — keeps this cheap
+// enough for the Lighthouse mobile budget, and matte/calm rather than
+// jewel-shiny (low metalness, higher roughness).
 const COLOR_STOPS = [
-  new THREE.Color("#f2628f"), // pink
-  new THREE.Color("#9b6fe0"), // violet
-  new THREE.Color("#4a4fe8"), // indigo
-  new THREE.Color("#c2399e"), // magenta
+  new THREE.Color("#0d9488"), // teal
+  new THREE.Color("#10b981"), // emerald
+  new THREE.Color("#06b6d4"), // cyan
+  new THREE.Color("#5eead4"), // mint
 ];
 
 function Blob({ autoRotate, distortSpeed }: { autoRotate: boolean; distortSpeed: number }) {
@@ -56,11 +57,11 @@ function Blob({ autoRotate, distortSpeed }: { autoRotate: boolean; distortSpeed:
     <mesh ref={meshRef} scale={scale}>
       <icosahedronGeometry args={[1, 12]} />
       <MeshDistortMaterial
-        distort={0.45}
+        distort={0.35}
         speed={distortSpeed}
-        roughness={0.15}
-        metalness={0.25}
-        color="#f2628f"
+        roughness={0.45}
+        metalness={0.08}
+        color="#0d9488"
       />
     </mesh>
   );
@@ -79,9 +80,9 @@ export function BlobScene({
       gl={{ antialias: !cheap, alpha: true }}
       camera={{ position: [0, 0, 4.2], fov: 42 }}
     >
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[3, 4, 5]} intensity={1.4} />
-      <directionalLight position={[-4, -2, -3]} intensity={0.5} color="#9b6fe0" />
+      <ambientLight intensity={0.7} />
+      <directionalLight position={[3, 4, 5]} intensity={1.2} />
+      <directionalLight position={[-4, -2, -3]} intensity={0.4} color="#06b6d4" />
       <Blob autoRotate={!reducedMotion} distortSpeed={reducedMotion ? 0.4 : cheap ? 1 : 1.8} />
     </Canvas>
   );

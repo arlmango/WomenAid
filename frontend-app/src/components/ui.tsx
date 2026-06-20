@@ -3,12 +3,13 @@ import { motion, type HTMLMotionProps } from "framer-motion";
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`rounded-card border-[1.5px] border-line bg-surface shadow-soft ${className}`}>
+    <div className={`rounded-card border border-line bg-surface shadow-soft ${className}`}>
       {children}
     </div>
   );
 }
 
+// Calm, confident — solid teal, normal case, medium weight. No shouting.
 export function PrimaryButton({
   children,
   className = "",
@@ -16,10 +17,10 @@ export function PrimaryButton({
 }: HTMLMotionProps<"button">) {
   return (
     <motion.button
-      whileHover={props.disabled ? undefined : { scale: 1.03 }}
+      whileHover={props.disabled ? undefined : { scale: 1.02 }}
       whileTap={props.disabled ? undefined : { scale: 0.98 }}
       {...props}
-      className={`flex min-h-11 items-center justify-center gap-2 rounded-btn bg-gradient-to-br from-pink to-magenta px-5 font-bold uppercase tracking-wide text-white shadow-btn transition-shadow disabled:cursor-not-allowed disabled:from-pink-soft disabled:to-pink-soft disabled:shadow-none ${className}`}
+      className={`flex min-h-11 items-center justify-center gap-2 rounded-btn bg-teal px-5 font-semibold text-white shadow-btn transition-shadow hover:bg-teal-deep disabled:cursor-not-allowed disabled:bg-teal-soft disabled:shadow-none ${className}`}
     >
       {children}
     </motion.button>
@@ -33,10 +34,10 @@ export function GhostButton({
 }: HTMLMotionProps<"button">) {
   return (
     <motion.button
-      whileHover={props.disabled ? undefined : { scale: 1.03 }}
+      whileHover={props.disabled ? undefined : { scale: 1.02 }}
       whileTap={props.disabled ? undefined : { scale: 0.98 }}
       {...props}
-      className={`flex min-h-11 items-center justify-center gap-2 rounded-btn border-2 border-navy bg-transparent px-5 text-sm font-semibold text-navy transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`flex min-h-11 items-center justify-center gap-2 rounded-btn border border-line bg-transparent px-5 text-sm font-semibold text-ink transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
       {children}
     </motion.button>

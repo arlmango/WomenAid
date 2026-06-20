@@ -27,10 +27,10 @@ export function PatientLayout() {
 
   return (
     <div className="flex min-h-screen flex-col items-center py-0 sm:py-6">
-      <div className="relative flex h-screen w-full max-w-[430px] flex-col overflow-hidden bg-bg sm:h-[calc(100vh-3rem)] sm:rounded-card sm:border-[1.5px] sm:border-line sm:shadow-soft-hover">
-        <header className="z-20 flex flex-none items-center justify-between gap-2 border-b-[1.5px] border-line bg-surface px-4 py-3 shadow-soft">
+      <div className="relative flex h-screen w-full max-w-[430px] flex-col overflow-hidden bg-bg sm:h-[calc(100vh-3rem)] sm:rounded-card sm:border sm:border-line sm:shadow-soft-hover">
+        <header className="z-20 flex flex-none items-center justify-between gap-2 border-b border-line bg-surface px-4 py-3 shadow-soft">
           <div className="flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta font-serif text-sm text-white">
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-teal font-serif text-sm text-white">
               W
             </span>
             <div className="leading-tight">
@@ -63,7 +63,7 @@ export function PatientLayout() {
           </AnimatePresence>
         </main>
 
-        <nav className="z-20 flex-none border-t-[1.5px] border-line bg-surface pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-soft">
+        <nav className="z-20 flex-none border-t border-line bg-surface pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-soft">
           <ul className="grid grid-cols-2">
             {TABS.map((tab) => (
               <li key={tab.to}>
@@ -77,16 +77,16 @@ export function PatientLayout() {
                       {isActive && (
                         <motion.span
                           layoutId="patient-tab"
-                          className="absolute top-1 h-8 w-12 rounded-full bg-rose-bg"
+                          className="absolute top-1 h-8 w-12 rounded-full bg-teal-bg"
                           transition={{ type: "spring", stiffness: 420, damping: 32 }}
                         />
                       )}
                       <tab.Icon
                         size={20}
                         strokeWidth={2.25}
-                        className={`relative z-10 ${isActive ? "text-magenta" : "text-ink-muted"}`}
+                        className={`relative z-10 ${isActive ? "text-teal-deep" : "text-ink-muted"}`}
                       />
-                      <span className={`relative z-10 ${isActive ? "text-magenta" : "text-ink-muted"}`}>
+                      <span className={`relative z-10 ${isActive ? "text-teal-deep" : "text-ink-muted"}`}>
                         {tab.label}
                       </span>
                     </>

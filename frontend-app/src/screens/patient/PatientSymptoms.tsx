@@ -59,7 +59,7 @@ export function PatientSymptoms() {
           onChange={(e) => setText(e.target.value)}
           placeholder="Опишите симптом своими словами…"
           rows={3}
-          className="mb-3 w-full rounded-input border-[1.5px] border-line bg-surface-2 px-3.5 py-2.5 text-sm text-ink focus:border-indigo focus:outline-none focus:ring-3 focus:ring-indigo/15"
+          className="mb-3 w-full rounded-input border border-line bg-surface-2 px-3.5 py-2.5 text-sm text-ink focus:border-teal focus:outline-none focus:ring-3 focus:ring-teal/15"
         />
         <PrimaryButton disabled={submitting || !text.trim()} onClick={handleSubmit} className="w-full">
           <Send size={16} strokeWidth={2.25} /> Записать
@@ -69,7 +69,7 @@ export function PatientSymptoms() {
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`mt-3 flex items-start gap-2.5 rounded-input border-[1.5px] border-line p-3 text-sm ${
+            className={`mt-3 flex items-start gap-2.5 rounded-input border border-line p-3 text-sm ${
               lastVerdict.is_red_flag ? "bg-urgent-bg text-urgent" : "bg-mint-bg text-mint-deep"
             }`}
           >
@@ -84,7 +84,7 @@ export function PatientSymptoms() {
           <div className="h-3 w-1/3 animate-pulse rounded-full bg-surface-3" />
         </Card>
       ) : entries.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-card border-[1.5px] border-line bg-surface p-8 text-center shadow-soft">
+        <div className="flex flex-col items-center gap-3 rounded-card border border-line bg-surface p-8 text-center shadow-soft">
           <span className="grid h-14 w-14 place-items-center rounded-full bg-lavender-bg text-lavender-deep">
             <NotebookText size={26} strokeWidth={2} />
           </span>
@@ -95,7 +95,7 @@ export function PatientSymptoms() {
           {entries.map((entry) => (
             <li
               key={entry.id}
-              className={`rounded-card border-[1.5px] bg-surface p-4 shadow-soft ${
+              className={`rounded-card border bg-surface p-4 shadow-soft ${
                 entry.is_red_flag ? "border-urgent/50" : "border-line"
               }`}
             >

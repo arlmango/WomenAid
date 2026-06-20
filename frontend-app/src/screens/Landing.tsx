@@ -61,13 +61,10 @@ export function Landing() {
     <div>
       <header className="relative z-10 flex items-center justify-between px-5 py-5 sm:px-10">
         <div className="flex items-center gap-2.5">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta text-white shadow-btn">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-teal text-white shadow-btn">
             <HeartHandshake size={18} strokeWidth={2.25} />
           </span>
-          <span className="font-serif text-xl">
-            <span className="text-indigo">Women</span>
-            <span className="text-magenta">AId</span>
-          </span>
+          <span className="font-serif text-xl text-ink">WomenAId</span>
         </div>
         <div className="flex items-center gap-2.5">
           <Link to="/login" className="text-sm font-semibold text-navy hover:underline">
@@ -153,7 +150,7 @@ export function Landing() {
               variants={scrollReveal}
               transition={{ delay: i * 0.1 }}
               whileHover={{ scale: 1.02, boxShadow: "var(--shadow-soft-hover)" }}
-              className="rounded-card border-[1.5px] border-line bg-surface p-6"
+              className="rounded-card border border-line bg-surface p-6"
             >
               <span className={`mb-3 grid h-11 w-11 place-items-center rounded-full ${item.badge}`}>
                 <item.Icon size={20} strokeWidth={2.25} />
@@ -195,7 +192,7 @@ export function Landing() {
               variants={scrollReveal}
               transition={{ delay: i * 0.08 }}
               whileHover={{ scale: 1.03 }}
-              className="rounded-card-sharp border-[1.5px] border-line bg-surface p-4"
+              className="rounded-card-sharp border border-line bg-surface p-4"
             >
               <span className="mb-2 grid h-9 w-9 place-items-center rounded-full bg-mint-bg text-mint-deep">
                 <point.Icon size={17} strokeWidth={2.25} />
@@ -215,7 +212,7 @@ export function Landing() {
         variants={scrollReveal}
         className="mx-auto max-w-3xl px-5 py-14 text-center"
       >
-        <span className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta text-white shadow-btn">
+        <span className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-full bg-teal text-white shadow-btn">
           <ShieldCheck size={22} strokeWidth={2.25} />
         </span>
         <h2 className="font-serif text-2xl text-navy">Готовы начать?</h2>

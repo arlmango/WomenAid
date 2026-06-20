@@ -28,7 +28,7 @@ export function Step2Credentials({
             autoComplete="username"
             value={form.username}
             onChange={(e) => update({ username: e.target.value })}
-            className="w-full rounded-input border-[1.5px] border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-indigo focus:outline-none focus:ring-3 focus:ring-indigo/15"
+            className="w-full rounded-input border border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-teal focus:outline-none focus:ring-3 focus:ring-teal/15"
           />
         </div>
       </div>
@@ -47,7 +47,7 @@ export function Step2Credentials({
             autoComplete="new-password"
             value={form.password}
             onChange={(e) => update({ password: e.target.value })}
-            className="w-full rounded-input border-[1.5px] border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-indigo focus:outline-none focus:ring-3 focus:ring-indigo/15"
+            className="w-full rounded-input border border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-teal focus:outline-none focus:ring-3 focus:ring-teal/15"
           />
         </div>
       </div>
@@ -65,10 +65,10 @@ export function Step2Credentials({
             autoComplete="new-password"
             value={form.confirmPassword}
             onChange={(e) => update({ confirmPassword: e.target.value })}
-            className={`w-full rounded-input border-[1.5px] bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:outline-none focus:ring-3 ${
+            className={`w-full rounded-input border bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:outline-none focus:ring-3 ${
               passwordsMismatch
                 ? "border-urgent focus:border-urgent focus:ring-urgent/15"
-                : "border-line focus:border-indigo focus:ring-indigo/15"
+                : "border-line focus:border-teal focus:ring-teal/15"
             }`}
           />
         </div>
@@ -87,7 +87,7 @@ export function Step2Credentials({
             value={form.phone}
             onChange={(e) => update({ phone: e.target.value })}
             placeholder="+7 700 000 00 00"
-            className="w-full rounded-input border-[1.5px] border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-indigo focus:outline-none focus:ring-3 focus:ring-indigo/15"
+            className="w-full rounded-input border border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-teal focus:outline-none focus:ring-3 focus:ring-teal/15"
           />
         </div>
       </div>

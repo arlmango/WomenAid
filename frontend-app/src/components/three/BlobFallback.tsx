@@ -7,9 +7,9 @@ export function BlobFallback() {
     <svg viewBox="0 0 400 400" className="h-full w-full animate-[blob-pulse_8s_ease-in-out_infinite]">
       <defs>
         <linearGradient id="blob-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#f2628f" />
-          <stop offset="45%" stopColor="#9b6fe0" />
-          <stop offset="100%" stopColor="#4a4fe8" />
+          <stop offset="0%" stopColor="#0d9488" />
+          <stop offset="45%" stopColor="#10b981" />
+          <stop offset="100%" stopColor="#06b6d4" />
         </linearGradient>
       </defs>
       <path

@@ -27,7 +27,7 @@ export function Toaster() {
               transition={{ type: "spring", stiffness: 420, damping: 32 }}
               onClick={() => toast.dismiss(t.id)}
               role="status"
-              className={`pointer-events-auto flex w-full max-w-sm items-start gap-2.5 rounded-card border-[1.5px] border-line px-4 py-3 text-sm font-medium shadow-soft ${cls}`}
+              className={`pointer-events-auto flex w-full max-w-sm items-start gap-2.5 rounded-card border border-line px-4 py-3 text-sm font-medium shadow-soft ${cls}`}
             >
               <Icon size={18} className="mt-0.5 flex-none" />
               <span>{t.text}</span>

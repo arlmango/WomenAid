@@ -53,8 +53,8 @@ export function ScreeningRing({
         ))}
         <defs>
           <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#f2628f" />
-            <stop offset="100%" stopColor="#c2399e" />
+            <stop offset="0%" stopColor="#0d9488" />
+            <stop offset="100%" stopColor="#0b6e63" />
           </linearGradient>
         </defs>
       </svg>

@@ -24,7 +24,7 @@ export function Step1Basics({
             required
             value={form.displayName}
             onChange={(e) => update({ displayName: e.target.value })}
-            className="w-full rounded-input border-[1.5px] border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-indigo focus:outline-none focus:ring-3 focus:ring-indigo/15"
+            className="w-full rounded-input border border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-teal focus:outline-none focus:ring-3 focus:ring-teal/15"
           />
         </div>
       </div>
@@ -42,7 +42,7 @@ export function Step1Basics({
             max={new Date().toISOString().slice(0, 10)}
             value={form.birthDate}
             onChange={(e) => update({ birthDate: e.target.value })}
-            className="w-full rounded-input border-[1.5px] border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-indigo focus:outline-none focus:ring-3 focus:ring-indigo/15"
+            className="w-full rounded-input border border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-teal focus:outline-none focus:ring-3 focus:ring-teal/15"
           />
         </div>
       </div>
@@ -58,7 +58,7 @@ export function Step1Basics({
             value={form.region}
             onChange={(e) => update({ region: e.target.value })}
             placeholder="например, Алматы"
-            className="w-full rounded-input border-[1.5px] border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-indigo focus:outline-none focus:ring-3 focus:ring-indigo/15"
+            className="w-full rounded-input border border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-teal focus:outline-none focus:ring-3 focus:ring-teal/15"
           />
         </div>
       </div>

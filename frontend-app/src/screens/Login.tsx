@@ -63,18 +63,15 @@ export function Login() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 py-10">
       <Link to="/" className="mb-6 flex items-center gap-2.5">
-        <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta text-white shadow-btn">
+        <span className="grid h-9 w-9 place-items-center rounded-full bg-teal text-white shadow-btn">
           <HeartHandshake size={18} strokeWidth={2.25} />
         </span>
-        <span className="font-serif text-2xl">
-          <span className="text-indigo">Women</span>
-          <span className="text-magenta">AId</span>
-        </span>
+        <span className="font-serif text-2xl text-ink">WomenAId</span>
       </Link>
 
       <motion.div
         animate={shakeControls}
-        className="w-full max-w-sm rounded-card border-[1.5px] border-line bg-surface p-7 shadow-soft-hover"
+        className="w-full max-w-sm rounded-card border border-line bg-surface p-7 shadow-soft-hover"
       >
         {!clinicRedirect ? (
           <>
@@ -97,14 +94,14 @@ export function Login() {
             </form>
             <p className="mt-4 text-center text-sm text-ink-soft">
               Ещё нет аккаунта?{" "}
-              <Link to="/register" className="font-semibold text-magenta hover:underline">
+              <Link to="/register" className="font-semibold text-teal-deep hover:underline">
                 Зарегистрироваться
               </Link>
             </p>
           </>
         ) : (
           <div className="text-center">
-            <span className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-lavender-bg text-lavender-deep">
+            <span className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-indigo-bg text-indigo-deep">
               <Stethoscope size={22} strokeWidth={2.25} />
             </span>
             <h2 className="font-serif text-xl text-navy">Это кабинет врача</h2>
@@ -152,7 +149,7 @@ function Field({
           autoComplete={autoComplete}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full rounded-input border-[1.5px] border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-indigo focus:outline-none focus:ring-3 focus:ring-indigo/15"
+          className="w-full rounded-input border border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-teal focus:outline-none focus:ring-3 focus:ring-teal/15"
         />
       </div>
     </div>

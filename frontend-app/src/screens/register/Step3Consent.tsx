@@ -30,7 +30,7 @@ export function Step3Consent({
 
       {/* Full text, always visible (not hidden behind a small link) — CLAUDE.md
           treats this as a technical/safety requirement, not a formality. */}
-      <div className="max-h-56 overflow-y-auto rounded-card border-[1.5px] border-line bg-surface-2 p-4 text-sm leading-relaxed text-ink">
+      <div className="max-h-56 overflow-y-auto rounded-card border border-line bg-surface-2 p-4 text-sm leading-relaxed text-ink">
         {loading ? (
           <span className="text-ink-muted">Загрузка текста согласия…</span>
         ) : consentText ? (
@@ -47,13 +47,13 @@ export function Step3Consent({
         )}
       </div>
 
-      <label className="flex cursor-pointer items-start gap-3 rounded-card border-[1.5px] border-line bg-surface p-4">
+      <label className="flex cursor-pointer items-start gap-3 rounded-card border border-line bg-surface p-4">
         <input
           type="checkbox"
           checked={form.consent}
           onChange={(e) => update({ consent: e.target.checked })}
           disabled={!consentText}
-          className="mt-0.5 h-5 w-5 flex-none accent-magenta"
+          className="mt-0.5 h-5 w-5 flex-none accent-teal"
         />
         <span className="text-sm text-ink">
           <span className="mb-0.5 flex items-center gap-1.5 font-semibold text-navy">

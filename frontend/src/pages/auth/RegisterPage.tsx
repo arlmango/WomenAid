@@ -1,50 +1,19 @@
-import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { KeyRound, Lock, LogIn, User, UserPlus } from "lucide-react";
-import { register, ApiError } from "../../lib/api";
-import { useAuth, homePathForRole } from "../../lib/auth";
+import { ExternalLink, LogIn, UserPlus } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { FieldInput } from "../../components/FieldInput";
 
-// Always creates a `patient` account (see backend/app/routers/auth.py —
-// /auth/register never accepts a role). There is no role picker here on
-// purpose: clinician/admin accounts are provisioned out-of-band.
+// Patient self-registration now lives in frontend-app/ (the primary site —
+// see README "Три фронтенда"). It collects display_name/birth_date/consent
+// and calls the real POST /auth/register contract; duplicating that form
+// here would mean keeping two implementations of the same backend contract
+// in sync by hand (exactly the kind of drift that broke this page once
+// already — see backend/app/schemas/auth.py::RegisterRequest history).
+const PATIENT_APP_URL = import.meta.env.VITE_PATIENT_APP_URL ?? "http://localhost:5174/register";
+
 export function RegisterPage() {
   const { t } = useLanguage();
-  const { login: setSession } = useAuth();
   const navigate = useNavigate();
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setError(null);
-
-    if (password !== confirmPassword) {
-      setError(t("registerErrorMismatch"));
-      return;
-    }
-
-    setBusy(true);
-    try {
-      const { access_token } = await register(username, password);
-      const session = setSession(access_token);
-      if (!session) throw new Error(t("registerErrorServer"));
-      navigate(homePathForRole(session.role), { replace: true });
-    } catch (err) {
-      if (err instanceof ApiError && err.status === 400) setError(t("registerErrorTaken"));
-      else if (err instanceof ApiError && err.status === 422) setError(t("registerErrorWeak"));
-      else if (err instanceof ApiError && err.status === 0) setError(t("registerErrorNetwork"));
-      else setError(t("registerErrorServer"));
-    } finally {
-      setBusy(false);
-    }
-  }
 
   return (
     <motion.div
@@ -58,51 +27,18 @@ export function RegisterPage() {
           <UserPlus size={22} strokeWidth={2.25} />
         </span>
         <h2 className="font-serif text-2xl text-navy">{t("registerTitle")}</h2>
+        <p className="mt-2 text-sm text-ink-soft">{t("registerRedirectText")}</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3.5">
-        <FieldInput
-          id="reg-username"
-          label={t("usernameLabel")}
-          icon={User}
-          type="text"
-          autoComplete="username"
-          required
-          minLength={3}
-          value={username}
-          onChange={setUsername}
-        />
-        <FieldInput
-          id="reg-password"
-          label={t("passwordLabel")}
-          icon={Lock}
-          type="password"
-          autoComplete="new-password"
-          required
-          minLength={8}
-          value={password}
-          onChange={setPassword}
-        />
-        <FieldInput
-          id="reg-confirm"
-          label={t("confirmPasswordLabel")}
-          icon={KeyRound}
-          type="password"
-          autoComplete="new-password"
-          required
-          minLength={8}
-          value={confirmPassword}
-          onChange={setConfirmPassword}
-        />
+      <a href={PATIENT_APP_URL} className="block">
         <button
-          type="submit"
-          disabled={busy}
-          className="flex min-h-11 w-full items-center justify-center rounded-btn bg-gradient-to-br from-pink to-magenta px-5 font-bold uppercase tracking-wide text-white shadow-btn transition-shadow hover:shadow-btn-hover disabled:cursor-not-allowed disabled:from-rose-pale disabled:to-rose-pale disabled:shadow-none"
+          type="button"
+          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-btn bg-gradient-to-br from-pink to-magenta px-5 font-bold uppercase tracking-wide text-white shadow-btn transition-shadow hover:shadow-btn-hover"
         >
-          {busy ? t("registerButtonBusy") : t("registerButton")}
+          <ExternalLink size={17} strokeWidth={2.25} />
+          {t("registerRedirectButton")}
         </button>
-        {error && <p className="text-sm text-urgent">{error}</p>}
-      </form>
+      </a>
 
       <div className="my-5 flex items-center gap-3">
         <span className="h-px flex-1 bg-line" />
@@ -118,10 +54,6 @@ export function RegisterPage() {
         <LogIn size={17} strokeWidth={2.25} />
         {t("loginLink")}
       </button>
-
-      <p className="mt-4 border-t border-line pt-3 text-xs leading-relaxed text-ink-muted">
-        {t("registerNote")}
-      </p>
     </motion.div>
   );
 }

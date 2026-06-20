@@ -1,58 +1,76 @@
 @import "tailwindcss";
 
-/* Same brand palette as frontend/src/index.css — warm cream background,
-   navy/indigo/violet/magenta/pink, blob gradients, sharp dark-outlined
-   cards, Anton display headlines. Kept in sync by hand (separate app,
-   separate build) — see README "Палитра" note if this ever drifts. */
+/* "Clinical Calm" — a calm, trustworthy health-tech look: near-white
+   background, a single confident teal accent, generous whitespace, soft
+   diffuse shadows, normal-case Manrope typography. Deliberately NOT the
+   previous pink/blob pitch-deck aesthetic — semantic colors (amber/red/
+   indigo) are reserved for status meaning only, never decoration. */
 @theme {
-  --color-bg: #f8f4eb;
+  /* --- Backgrounds --- */
+  --color-bg: #fbfdfc;
   --color-surface: #ffffff;
-  --color-surface-2: #fcf8ef;
-  --color-surface-3: #f3ecdc;
+  --color-surface-2: #f1f5f4;
+  --color-surface-3: #e7eeec;
 
-  --color-navy: #1b2a6b;
-  --color-indigo: #4a4fe8;
-  --color-violet: #9b6fe0;
-  --color-magenta: #c2399e;
-  --color-pink: #f2628f;
-  --color-pink-soft: #f6c1da;
+  /* --- Brand: one confident accent --- */
+  --color-teal: #0d9488;
+  --color-teal-deep: #0b6e63;
+  --color-teal-bg: #e6f5f3;
+  --color-teal-soft: #5eada4;
 
-  --color-blob-pink: #ff8fc4;
-  --color-blob-orange: #ffc089;
-  --color-blob-peach: #ffd9b3;
-  --color-blob-lavender: #d9c2f0;
+  /* --- Secondary accent (used sparingly: priority status, links on dark) --- */
+  --color-indigo: #4f46e5;
+  --color-indigo-deep: #3730a3;
+  --color-indigo-bg: #eef0fd;
 
-  --color-mint: #5fe8b0;
-  --color-mint-deep: #1b2a6b;
-  --color-mint-bg: #e3fbf1;
-  --color-gold: #f2a65a;
-  --color-gold-deep: #8a5a16;
-  --color-gold-bg: #fdeedc;
-  --color-coral: #e63950;
-  --color-coral-bg: #fde3e7;
+  /* --- Semantic status colors — reserved, never decorative --- */
+  --color-amber: #d97706;
+  --color-amber-bg: #fef3e2;
+  --color-urgent: #dc2626;
+  --color-urgent-bg: #fee2e2;
+  --color-mint: #0d9488;
+  --color-mint-deep: #0b6e63;
+  --color-mint-bg: #e6f5f3;
+  --color-gold: #d97706;
+  --color-gold-deep: #92400e;
+  --color-gold-bg: #fef3e2;
 
-  --color-urgent: #e63950;
-  --color-urgent-bg: #fde3e7;
-  --color-lavender-bg: #ede6fb;
-  --color-lavender-deep: #4a4fe8;
+  /* --- Legacy semantic aliases kept so existing utility classes resolve --- */
+  --color-pink: #0d9488;
+  --color-pink-soft: #5eada4;
+  --color-magenta: #0b6e63;
+  --color-navy: #0f172a;
+  --color-rose-bg: #e6f5f3;
+  --color-rose-deep: #0b6e63;
+  --color-lavender: #4f46e5;
+  --color-lavender-deep: #3730a3;
+  --color-lavender-bg: #eef0fd;
+  --color-peach-bg: #fef3e2;
+  --color-peach-deep: #92400e;
 
-  --color-ink: #1f1b2e;
-  --color-ink-soft: #5b5468;
-  --color-ink-muted: #8b86a0;
-  --color-line: #2a2440;
+  /* --- Ambient blob colors — soft, low-saturation, teal/mint family only --- */
+  --color-blob-pink: #99d8cf;
+  --color-blob-orange: #cfe8b8;
+  --color-blob-peach: #bfe3e6;
+  --color-blob-lavender: #c7d2fe;
 
-  --font-serif: "Anton", "Arial Narrow", sans-serif;
-  --font-sans: "DM Sans", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --color-ink: #15202b;
+  --color-ink-soft: #50616b;
+  --color-ink-muted: #8c9ca3;
+  --color-line: #e2e8e7;
 
-  --radius-card: 12px;
-  --radius-card-sharp: 4px;
-  --radius-btn: 10px;
-  --radius-input: 8px;
+  --font-serif: "Manrope", "DM Sans", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-sans: "Manrope", "DM Sans", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 
-  --shadow-btn: 0 4px 14px #f2628f4a;
-  --shadow-btn-hover: 0 6px 20px #f2628f66;
-  --shadow-soft: 0 1px 2px #1f1b2e0a, 0 10px 24px -10px #1f1b2e22;
-  --shadow-soft-hover: 0 1px 2px #1f1b2e0a, 0 14px 32px -10px #c2399e3d;
+  --radius-card: 20px;
+  --radius-card-sharp: 16px;
+  --radius-btn: 12px;
+  --radius-input: 10px;
+
+  --shadow-btn: 0 10px 24px -8px #0d948855;
+  --shadow-btn-hover: 0 14px 28px -8px #0d948870;
+  --shadow-soft: 0 1px 2px #15202b08, 0 10px 28px -10px #15202b14;
+  --shadow-soft-hover: 0 1px 2px #15202b08, 0 18px 36px -10px #0d948830;
 }
 
 html,
@@ -68,9 +86,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Headlines use a heavy weight of the same calm sans — never all-caps. */
 .font-serif {
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 @media (prefers-reduced-motion: reduce) {

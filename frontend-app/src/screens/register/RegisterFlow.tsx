@@ -82,13 +82,10 @@ export function RegisterFlow() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 py-10">
       <Link to="/" className="mb-6 flex items-center gap-2.5">
-        <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta text-white shadow-btn">
+        <span className="grid h-9 w-9 place-items-center rounded-full bg-teal text-white shadow-btn">
           <HeartHandshake size={18} strokeWidth={2.25} />
         </span>
-        <span className="font-serif text-2xl">
-          <span className="text-indigo">Women</span>
-          <span className="text-magenta">AId</span>
-        </span>
+        <span className="font-serif text-2xl text-ink">WomenAId</span>
       </Link>
 
       {/* Progress dots */}
@@ -100,11 +97,11 @@ export function RegisterFlow() {
           return (
             <div key={label} className="flex items-center gap-2">
               <div
-                className={`grid h-7 w-7 place-items-center rounded-full border-[1.5px] text-xs font-bold ${
+                className={`grid h-7 w-7 place-items-center rounded-full border text-xs font-bold ${
                   active
-                    ? "border-magenta bg-gradient-to-br from-pink to-magenta text-white"
+                    ? "border-teal-deep bg-teal text-white"
                     : done
-                      ? "border-mint-deep bg-mint text-mint-deep"
+                      ? "border-teal bg-teal-bg text-teal-deep"
                       : "border-line bg-surface text-ink-muted"
                 }`}
               >
@@ -118,7 +115,7 @@ export function RegisterFlow() {
 
       <motion.div
         animate={shakeControls}
-        className="w-full max-w-sm overflow-hidden rounded-card border-[1.5px] border-line bg-surface p-7 shadow-soft-hover"
+        className="w-full max-w-sm overflow-hidden rounded-card border border-line bg-surface p-7 shadow-soft-hover"
       >
         <AnimatePresence mode="wait" custom={direction} initial={false}>
           <motion.div
@@ -162,7 +159,7 @@ export function RegisterFlow() {
 
       <p className="mt-4 text-sm text-ink-soft">
         Уже есть аккаунт?{" "}
-        <Link to="/login" className="font-semibold text-magenta hover:underline">
+        <Link to="/login" className="font-semibold text-teal-deep hover:underline">
           Войти
         </Link>
       </p>

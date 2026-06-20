@@ -10,8 +10,8 @@ interface StatusMeta {
 // Mirrors backend/app/models/screening_rules.py::SCREENING_STATUSES — purely
 // presentational mapping, no clinical logic invented here.
 export const SCREENING_META: Record<string, StatusMeta> = {
-  UP_TO_DATE: { ru: "Скрининг актуален", Icon: CalendarCheck, iconClassName: "bg-mint text-mint-deep", progress: 0.25 },
-  DUE_SOON: { ru: "Скрининг скоро понадобится", Icon: CalendarClock, iconClassName: "bg-gold text-navy", progress: 0.8 },
+  UP_TO_DATE: { ru: "Скрининг актуален", Icon: CalendarCheck, iconClassName: "bg-mint-bg text-mint-deep", progress: 0.25 },
+  DUE_SOON: { ru: "Скрининг скоро понадобится", Icon: CalendarClock, iconClassName: "bg-gold-bg text-gold-deep", progress: 0.8 },
   OVERDUE: { ru: "Скрининг просрочен", Icon: CalendarX, iconClassName: "bg-urgent text-white", progress: 1 },
   NOT_YET_ELIGIBLE: {
     ru: "Пока не входит в программу по возрасту",
