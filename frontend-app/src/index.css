@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+/* Same brand palette as frontend/src/index.css — warm cream background,
+   navy/indigo/violet/magenta/pink, blob gradients, sharp dark-outlined
+   cards, Anton display headlines. Kept in sync by hand (separate app,
+   separate build) — see README "Палитра" note if this ever drifts. */
+@theme {
+  --color-bg: #f8f4eb;
+  --color-surface: #ffffff;
+  --color-surface-2: #fcf8ef;
+  --color-surface-3: #f3ecdc;
+
+  --color-navy: #1b2a6b;
+  --color-indigo: #4a4fe8;
+  --color-violet: #9b6fe0;
+  --color-magenta: #c2399e;
+  --color-pink: #f2628f;
+  --color-pink-soft: #f6c1da;
+
+  --color-blob-pink: #ff8fc4;
+  --color-blob-orange: #ffc089;
+  --color-blob-peach: #ffd9b3;
+  --color-blob-lavender: #d9c2f0;
+
+  --color-mint: #5fe8b0;
+  --color-mint-deep: #1b2a6b;
+  --color-mint-bg: #e3fbf1;
+  --color-gold: #f2a65a;
+  --color-gold-deep: #8a5a16;
+  --color-gold-bg: #fdeedc;
+  --color-coral: #e63950;
+  --color-coral-bg: #fde3e7;
+
+  --color-urgent: #e63950;
+  --color-urgent-bg: #fde3e7;
+  --color-lavender-bg: #ede6fb;
+  --color-lavender-deep: #4a4fe8;
+
+  --color-ink: #1f1b2e;
+  --color-ink-soft: #5b5468;
+  --color-ink-muted: #8b86a0;
+  --color-line: #2a2440;
+
+  --font-serif: "Anton", "Arial Narrow", sans-serif;
+  --font-sans: "DM Sans", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  --radius-card: 12px;
+  --radius-card-sharp: 4px;
+  --radius-btn: 10px;
+  --radius-input: 8px;
+
+  --shadow-btn: 0 4px 14px #f2628f4a;
+  --shadow-btn-hover: 0 6px 20px #f2628f66;
+  --shadow-soft: 0 1px 2px #1f1b2e0a, 0 10px 24px -10px #1f1b2e22;
+  --shadow-soft-hover: 0 1px 2px #1f1b2e0a, 0 14px 32px -10px #c2399e3d;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-serif {
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

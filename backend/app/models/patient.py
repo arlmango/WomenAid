@@ -16,6 +16,10 @@ class Patient(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     full_name = Column(String, nullable=True)
+    # Demographic fields collected at self-registration (POST /auth/register).
+    # Optional, contact/locale context only — not used in any clinical logic.
+    phone = Column(String, nullable=True)
+    region = Column(String, nullable=True)
     # None = not yet recorded; True/False = recorded consent decision.
     consent_given = Column(Boolean, nullable=True)
     # Used to derive screening status (see app/models/screening_rules.py).

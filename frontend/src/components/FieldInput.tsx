@@ -25,7 +25,7 @@ export function FieldInput({ label, icon: Icon, id, onChange, ...inputProps }: F
         <input
           id={id}
           onChange={handleChange}
-          className="w-full rounded-input border-[1.5px] border-line bg-[#fffafc] py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-rose focus:outline-none focus:ring-3 focus:ring-rose/10"
+          className="w-full rounded-input border-[1.5px] border-line bg-surface-2 py-2.5 pl-10 pr-3.5 text-base text-ink focus:border-indigo focus:outline-none focus:ring-3 focus:ring-indigo/15"
           {...inputProps}
         />
       </div>

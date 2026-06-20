@@ -8,7 +8,7 @@ export function EmptyState({
   icon: Icon,
   caption,
   detail,
-  badgeClassName = "bg-lavender-bg text-[#6a3d8a]",
+  badgeClassName = "bg-lavender-bg text-lavender-deep",
 }: {
   icon: LucideIcon;
   caption: string;
@@ -16,7 +16,7 @@ export function EmptyState({
   badgeClassName?: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-card border border-white/60 bg-white/80 p-8 text-center shadow-soft backdrop-blur-sm">
+    <div className="flex flex-col items-center gap-3 rounded-card border-[1.5px] border-line bg-surface p-8 text-center shadow-soft">
       <span className={`grid h-14 w-14 place-items-center rounded-full ${badgeClassName}`}>
         <Icon size={26} strokeWidth={2} />
       </span>

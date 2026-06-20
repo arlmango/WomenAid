@@ -31,10 +31,10 @@ export function PatientLayout() {
           header and bottom nav pinned to THIS card's edges, not the raw
           browser viewport — that matters once the card stops being
           full-bleed on desktop. */}
-      <div className="relative flex h-screen w-full max-w-[430px] flex-col overflow-hidden bg-bg sm:h-[calc(100vh-3rem)] sm:rounded-card sm:border sm:border-white/60 sm:shadow-soft-hover">
-        <header className="z-20 flex flex-none items-center justify-between gap-2 border-b border-white/60 bg-white/70 px-4 py-3 shadow-soft backdrop-blur-xl">
+      <div className="relative flex h-screen w-full max-w-[430px] flex-col overflow-hidden bg-bg sm:h-[calc(100vh-3rem)] sm:rounded-card sm:border-[1.5px] sm:border-line sm:shadow-soft-hover">
+        <header className="z-20 flex flex-none items-center justify-between gap-2 border-b-[1.5px] border-line bg-surface px-4 py-3 shadow-soft">
           <div className="flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-rose to-blush font-serif text-sm text-white">
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta font-serif text-sm text-white">
               W
             </span>
             <div className="leading-tight">
@@ -62,7 +62,7 @@ export function PatientLayout() {
           </AnimatePresence>
         </main>
 
-        <nav className="z-20 flex-none border-t border-white/60 bg-white/75 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-soft backdrop-blur-xl">
+        <nav className="z-20 flex-none border-t-[1.5px] border-line bg-surface pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-soft">
           <ul className="grid grid-cols-5">
             {TABS.map((tab) => (
               <li key={tab.to}>

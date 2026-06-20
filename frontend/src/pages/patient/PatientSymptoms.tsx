@@ -51,9 +51,9 @@ export function PatientSymptoms() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-serif text-xl text-ink">{t("navSymptoms")}</h1>
+      <h1 className="font-serif text-xl text-navy">{t("navSymptoms")}</h1>
 
-      <div className="rounded-card border border-white/60 bg-white/80 p-5 shadow-soft backdrop-blur-sm">
+      <div className="rounded-card border-[1.5px] border-line bg-surface p-5 shadow-soft">
         <label htmlFor="symptom-text" className="mb-1.5 block text-xs font-medium text-ink-soft">
           {t("symptomInputLabel")}
         </label>
@@ -63,13 +63,13 @@ export function PatientSymptoms() {
           onChange={(e) => setText(e.target.value)}
           placeholder={t("symptomInputPlaceholder")}
           rows={3}
-          className="mb-3 w-full rounded-input border-[1.5px] border-line bg-[#fffafc] px-3.5 py-2.5 text-sm text-ink focus:border-rose focus:outline-none focus:ring-3 focus:ring-rose/10"
+          className="mb-3 w-full rounded-input border-[1.5px] border-line bg-surface-2 px-3.5 py-2.5 text-sm text-ink focus:border-indigo focus:outline-none focus:ring-3 focus:ring-indigo/15"
         />
         <button
           type="button"
           disabled={submitting || !text.trim()}
           onClick={handleSubmit}
-          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-btn bg-gradient-to-br from-rose to-blush px-5 font-semibold text-white shadow-btn disabled:from-rose-pale disabled:to-rose-pale disabled:shadow-none"
+          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-btn bg-gradient-to-br from-pink to-magenta px-5 font-bold uppercase tracking-wide text-white shadow-btn disabled:from-rose-pale disabled:to-rose-pale disabled:shadow-none"
         >
           <Send size={16} strokeWidth={2.25} />
           {t("symptomSubmit")}
@@ -79,8 +79,8 @@ export function PatientSymptoms() {
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`mt-3 flex items-start gap-2.5 rounded-input p-3 text-sm ${
-              lastVerdict.is_red_flag ? "bg-urgent-bg text-urgent" : "bg-mint-bg text-[#2a7055]"
+            className={`mt-3 flex items-start gap-2.5 rounded-input border-[1.5px] border-line p-3 text-sm ${
+              lastVerdict.is_red_flag ? "bg-urgent-bg text-urgent" : "bg-mint-bg text-mint-deep"
             }`}
           >
             {lastVerdict.is_red_flag && <AlertOctagon size={18} className="mt-0.5 flex-none" />}
@@ -95,14 +95,14 @@ export function PatientSymptoms() {
         <EmptyState
           icon={NotebookText}
           caption={t("symptomEmptyList")}
-          badgeClassName="bg-lavender-bg text-[#6a3d8a]"
+          badgeClassName="bg-lavender-bg text-lavender-deep"
         />
       ) : (
         <ul className="space-y-2.5">
           {entries.map((entry) => (
             <li
               key={entry.id}
-              className="rounded-card border border-white/60 bg-white/80 p-4 shadow-soft backdrop-blur-sm"
+              className="rounded-card border-[1.5px] border-line bg-surface p-4 shadow-soft"
             >
               <div className="mb-1 flex items-center justify-between gap-2">
                 <span className="text-xs text-ink-muted">

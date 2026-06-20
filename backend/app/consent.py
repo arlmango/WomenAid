@@ -14,6 +14,20 @@ from app.models.consent import ConsentRecord
 from app.models.patient import Patient
 from app.timeutils import utcnow_naive
 
+# Canonical consent text + version. Single source of truth: the registration
+# endpoint records exactly this snapshot, and GET /auth/consent-text exposes
+# it so the frontend never has to keep its own (possibly drifting) copy.
+CONSENT_VERSION = "v1.0"
+CONSENT_TEXT = (
+    "Я даю согласие на обработку моих персональных данных и загруженных "
+    "снимков сервисом WomenAId для AI-триажа и мониторинга скрининга. "
+    "Я понимаю, что результат AI-анализа — вспомогательная информация для "
+    "маршрутизации (decision-support), а не медицинский диагноз, и что "
+    "окончательное решение всегда принимает врач. Я могу отозвать это "
+    "согласие в любой момент в личном кабинете; после отзыва AI-анализ "
+    "новых снимков технически становится невозможен."
+)
+
 
 def has_active_consent(db: Session, patient_id: int) -> bool:
     """True iff the patient has at least one consent without a withdrawn_at."""

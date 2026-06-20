@@ -40,13 +40,13 @@ export function LoginPage() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className="rounded-card border border-white/60 bg-white/80 p-7 shadow-soft-hover backdrop-blur-xl"
+      className="rounded-card border-[1.5px] border-line bg-surface p-7 shadow-soft-hover"
     >
       <div className="mb-5 flex flex-col items-center text-center">
-        <span className="mb-3 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-rose to-blush text-white shadow-btn">
+        <span className="mb-3 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta text-white shadow-btn">
           <HeartHandshake size={22} strokeWidth={2.25} />
         </span>
-        <h2 className="font-serif text-2xl text-ink">{t("loginTitle")}</h2>
+        <h2 className="font-serif text-2xl text-navy">{t("loginTitle")}</h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3.5">
@@ -73,7 +73,7 @@ export function LoginPage() {
         <button
           type="submit"
           disabled={busy}
-          className="flex min-h-11 w-full items-center justify-center rounded-btn bg-gradient-to-br from-rose to-blush px-5 font-semibold text-white shadow-btn transition-shadow hover:shadow-btn-hover disabled:cursor-not-allowed disabled:from-rose-pale disabled:to-rose-pale disabled:shadow-none"
+          className="flex min-h-11 w-full items-center justify-center rounded-btn bg-gradient-to-br from-pink to-magenta px-5 font-bold uppercase tracking-wide text-white shadow-btn transition-shadow hover:shadow-btn-hover disabled:cursor-not-allowed disabled:from-rose-pale disabled:to-rose-pale disabled:shadow-none"
         >
           {busy ? t("loginButtonBusy") : t("loginButton")}
         </button>
@@ -89,7 +89,7 @@ export function LoginPage() {
       <button
         type="button"
         onClick={() => navigate("/auth/register")}
-        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-btn border-[1.5px] border-rose-pale bg-white text-sm font-semibold text-rose-deep transition-colors hover:bg-rose-bg"
+        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-btn border-2 border-navy bg-transparent text-sm font-semibold text-navy transition-colors hover:bg-surface-2"
       >
         <UserPlus size={17} strokeWidth={2.25} />
         {t("registerLink")}

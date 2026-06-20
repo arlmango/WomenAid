@@ -8,7 +8,7 @@ export function ModelStatusBadge({ compact = false }: { compact?: boolean }) {
 
   if (compact) {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-lavender-bg px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-[#6a3d8a]">
+      <span className="inline-flex items-center gap-1 rounded-full border-[1.5px] border-line bg-lavender-bg px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-lavender-deep">
         <FlaskConical size={11} strokeWidth={2.5} />
         {t("modelStatusBadge")}
       </span>
@@ -16,12 +16,12 @@ export function ModelStatusBadge({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <div className="flex gap-3 rounded-card border border-white/60 bg-[#f7f2ff]/80 p-4 shadow-soft backdrop-blur-sm">
-      <span className="grid h-9 w-9 flex-none place-items-center rounded-full bg-lavender-bg text-[#6a3d8a]">
+    <div className="flex gap-3 rounded-card border-[1.5px] border-line bg-lavender-bg p-4 shadow-soft">
+      <span className="grid h-9 w-9 flex-none place-items-center rounded-full bg-white text-lavender-deep">
         <FlaskConical size={17} strokeWidth={2.25} />
       </span>
       <div>
-        <span className="mb-1.5 inline-flex items-center rounded-full bg-lavender-bg px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-[#6a3d8a]">
+        <span className="mb-1.5 inline-flex items-center rounded-full border-[1.5px] border-line bg-white px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-lavender-deep">
           {t("modelStatusBadge")}
         </span>
         <p className="text-sm text-ink-soft">{t("modelStatusText")}</p>

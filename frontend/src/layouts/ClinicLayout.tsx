@@ -22,13 +22,16 @@ export function ClinicLayout() {
     <div className="flex min-h-screen">
       <GradientBackdrop />
 
-      <aside className="sticky top-0 flex h-screen w-60 flex-none flex-col border-r border-white/60 bg-white/70 px-4 py-5 shadow-soft backdrop-blur-xl">
+      <aside className="sticky top-0 flex h-screen w-60 flex-none flex-col border-r-[1.5px] border-line bg-surface px-4 py-5 shadow-soft">
         <div className="mb-6 flex items-center gap-2.5 px-1">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-rose to-blush font-serif text-lg text-white shadow-btn">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta font-serif text-lg text-white shadow-btn">
             W
           </span>
           <div className="leading-tight">
-            <p className="font-serif text-base text-ink">WomenAId</p>
+            <p className="font-serif text-base">
+              <span className="text-indigo">Women</span>
+              <span className="text-magenta">AId</span>
+            </p>
             <p className="text-xs text-ink-soft">кабинет врача</p>
           </div>
         </div>

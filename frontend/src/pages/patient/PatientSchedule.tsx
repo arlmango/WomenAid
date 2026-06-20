@@ -11,9 +11,9 @@ import type { TranslationKey } from "../../i18n/translations";
 // date) — deterministic, explicitly PLACEHOLDER thresholds (not clinically
 // validated), never an AI guess.
 const STATUS_VISUALS: Record<string, { Icon: typeof CalendarDays; className: string }> = {
-  UP_TO_DATE: { Icon: CalendarCheck, className: "bg-mint-bg text-[#2a7055]" },
-  DUE_SOON: { Icon: CalendarClock, className: "bg-peach-bg text-[#8b4a2a]" },
-  OVERDUE: { Icon: CalendarX, className: "bg-urgent-bg text-urgent" },
+  UP_TO_DATE: { Icon: CalendarCheck, className: "bg-mint text-mint-deep" },
+  DUE_SOON: { Icon: CalendarClock, className: "bg-gold text-navy" },
+  OVERDUE: { Icon: CalendarX, className: "bg-urgent text-white" },
   NOT_YET_ELIGIBLE: { Icon: CalendarDays, className: "bg-surface-3 text-ink-soft" },
   OUT_OF_PROGRAM_AGE: { Icon: CalendarDays, className: "bg-surface-3 text-ink-soft" },
 };
@@ -29,7 +29,7 @@ export function PatientSchedule() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-serif text-xl text-ink">{t("navSchedule")}</h1>
+      <h1 className="font-serif text-xl text-navy">{t("navSchedule")}</h1>
       {loading || !data ? (
         <SkeletonCard />
       ) : (
@@ -37,7 +37,7 @@ export function PatientSchedule() {
           const visual = STATUS_VISUALS[data.screening_status] ?? DEFAULT_STATUS_VISUAL;
           const statusKey = `scheduleStatus_${data.screening_status}` as TranslationKey;
           return (
-            <div className="rounded-card border border-white/60 bg-white/80 p-5 shadow-soft backdrop-blur-sm">
+            <div className="rounded-card border-[1.5px] border-line bg-surface p-5 shadow-soft">
               <div className="mb-4 flex items-center gap-3">
                 <span className={`grid h-12 w-12 flex-none place-items-center rounded-full ${visual.className}`}>
                   <visual.Icon size={22} strokeWidth={2.25} />
@@ -48,7 +48,7 @@ export function PatientSchedule() {
                 </div>
               </div>
 
-              <dl className="space-y-2 border-t border-line pt-3 text-sm">
+              <dl className="space-y-2 border-t-[1.5px] border-line pt-3 text-sm">
                 <div className="flex justify-between gap-3">
                   <dt className="text-ink-soft">{t("scheduleLastDone")}</dt>
                   <dd className="font-medium text-ink">
