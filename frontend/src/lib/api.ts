@@ -95,6 +95,36 @@ export async function login(username: string, password: string): Promise<{ acces
   });
 }
 
+export interface ConsentTextResponse {
+  version: string;
+  text: string;
+}
+
+// Public — the canonical consent text the registration form must show
+// (see backend/app/consent.py) so what's displayed matches exactly what
+// /auth/register records as the consent snapshot.
+export function getConsentText(): Promise<ConsentTextResponse> {
+  return apiGet("/api/auth/consent-text", { silent: true });
+}
+
+export interface RegisterPayload {
+  display_name: string;
+  birth_date: string; // ISO date (YYYY-MM-DD)
+  phone?: string;
+  region?: string;
+  username: string;
+  password: string;
+  consent: boolean;
+}
+
+// POST /auth/register is JSON (see backend/app/schemas/auth.py::RegisterRequest).
+// consent must be true or the backend rejects with 400 and creates nothing —
+// not a softer "registered but unconsented" state (CLAUDE.md). Returns a
+// token, same as login (auto-login after signup).
+export function register(payload: RegisterPayload): Promise<{ access_token: string }> {
+  return apiPost("/api/auth/register", payload, { silent: true });
+}
+
 // Fetches a PDF with the bearer token attached and returns a blob: URL the
 // caller can window.open() — a plain <a href> can't carry Authorization.
 export async function fetchPdfObjectUrl(path: string): Promise<string> {
