@@ -10,6 +10,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { PatientLayout } from "./layouts/PatientLayout";
 
+import { Landing } from "./pages/Landing";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
 import { PatientHome } from "./pages/patient/PatientHome";
@@ -28,9 +29,10 @@ const ClinicQueue = lazy(() =>
   import("./pages/clinic/ClinicQueue").then((m) => ({ default: m.ClinicQueue })),
 );
 
-function RootRedirect() {
+function Root() {
   const { session } = useAuth();
-  return <Navigate to={session ? homePathForRole(session.role) : "/auth"} replace />;
+  if (session) return <Navigate to={homePathForRole(session.role)} replace />;
+  return <Landing />;
 }
 
 function NavigateBridge() {
@@ -48,7 +50,7 @@ export function App() {
         <NavigateBridge />
         <Toaster />
         <Routes>
-          <Route path="/" element={<RootRedirect />} />
+          <Route path="/" element={<Root />} />
 
           <Route element={<AuthLayout />}>
             <Route path="/auth" element={<LoginPage />} />

@@ -9,6 +9,23 @@ export const translations = {
     appName: "WomenAId",
     healthOk: "Сервер в сети",
     healthErr: "Сервер недоступен (подождите первый старт — идёт обучение модели)",
+    landingTag: "AI decision-support, не диагноз",
+    landingHeadlineStart: "ИИ помогает врачу",
+    landingHeadlineHighlight: "увидеть больше",
+    landingSubtext:
+      "WomenAId — система поддержки принятия решений для триажа снимков шейки матки и мониторинга скрининга. Окончательное решение всегда остаётся за врачом.",
+    landingCtaRegister: "Создать аккаунт",
+    landingCtaLogin: "Войти",
+    landingFeature1Title: "AI-триаж снимков",
+    landingFeature1Desc:
+      "Снимок проходит через модель и попадает в очередь клиники с приоритетом — врач принимает итоговое решение.",
+    landingFeature2Title: "Мониторинг и напоминания",
+    landingFeature2Desc:
+      "Дневник симптомов и график скрининга — пациентка не теряет из виду важные даты и сигналы.",
+    landingFeature3Title: "Согласие — на уровне кода",
+    landingFeature3Desc:
+      "AI-анализ снимка технически невозможен без активного согласия пациентки — это гейт в коде, не только политика.",
+    landingFooterNote: "WomenAId · демо-проект, готовится к пилоту с клиникой",
     loginTitle: "Вход",
     usernameLabel: "Логин",
     passwordLabel: "Пароль",
@@ -110,6 +127,23 @@ export const translations = {
     appName: "WomenAId",
     healthOk: "Сервер қосылған",
     healthErr: "Сервер қолжетімсіз (бірінші іске қосылуды күтіңіз — модель оқытылып жатыр)",
+    landingTag: "AI decision-support, диагноз емес",
+    landingHeadlineStart: "ИИ дәрігерге",
+    landingHeadlineHighlight: "көбірек көруге көмектеседі",
+    landingSubtext:
+      "WomenAId — жатыр мойны суреттерін триаждауға және скрининг мониторингіне арналған шешім қабылдауды қолдау жүйесі. Соңғы шешімді әрқашан дәрігер қабылдайды.",
+    landingCtaRegister: "Аккаунт жасау",
+    landingCtaLogin: "Кіру",
+    landingFeature1Title: "AI-триаж суреттер",
+    landingFeature1Desc:
+      "Сурет модельден өтіп, клиниканың басымдықты кезегіне түседі — соңғы шешімді дәрігер қабылдайды.",
+    landingFeature2Title: "Мониторинг және хабарландырулар",
+    landingFeature2Desc:
+      "Симптомдар күнделігі және скрининг кестесі — пациент маңызды күндер мен сигналдарды жіберіп алмайды.",
+    landingFeature3Title: "Келісім — код деңгейінде",
+    landingFeature3Desc:
+      "Пациенттің белсенді келісімі болмайынша AI-талдау техникалық тұрғыдан мүмкін емес — бұл кодтағы гейт, тек саясат емес.",
+    landingFooterNote: "WomenAId · демо-жоба, клиникамен пилотқа дайындалып жатыр",
     loginTitle: "Кіру",
     usernameLabel: "Пайдаланушы аты",
     passwordLabel: "Құпия сөз",
