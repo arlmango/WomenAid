@@ -6,6 +6,7 @@ import { useAuth, homePathForRole } from "./lib/auth";
 import { setNavigate } from "./lib/navigate";
 import { Toaster } from "./components/Toaster";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { CustomCursor } from "./components/CustomCursor";
 
 import { AuthLayout } from "./layouts/AuthLayout";
 import { PatientLayout } from "./layouts/PatientLayout";
@@ -48,6 +49,7 @@ export function App() {
     <LanguageProvider>
       <AuthProvider>
         <NavigateBridge />
+        <CustomCursor />
         <Toaster />
         <Routes>
           <Route path="/" element={<Root />} />

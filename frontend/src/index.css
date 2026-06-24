@@ -61,9 +61,10 @@
   --color-ink-muted: #8b86a0;
   --color-line: #2a2440; /* dark outline, NOT a pale line anymore */
 
-  /* --- Fonts --- */
-  --font-serif: "Anton", "Arial Narrow", sans-serif; /* display/headline */
-  --font-sans: "DM Sans", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  /* --- Fonts (3-font flagship system) --- */
+  --font-serif: "Fraunces", "Iowan Old Style", serif; /* display: H1/H2, hero, big metrics — variable opsz+wght */
+  --font-sans: "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif; /* body: text, buttons, nav, forms */
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace; /* technical-only: model_status, triage_label, IDs */
 
   /* --- Sharper corners than the old "rounded-2xl" glass style --- */
   --radius-card: 12px;
@@ -75,6 +76,12 @@
   --shadow-btn-hover: 0 6px 20px #f2628f66;
   --shadow-soft: 0 1px 2px #1f1b2e0a, 0 10px 24px -10px #1f1b2e22;
   --shadow-soft-hover: 0 1px 2px #1f1b2e0a, 0 14px 32px -10px #c2399e3d;
+
+  /* --- Glass (used on Landing/Auth/Patient cards — never on the clinic
+     data table, where legibility of raw_score/confidence beats polish) --- */
+  --glass-bg: rgba(255, 255, 255, 0.56);
+  --glass-border: rgba(27, 42, 107, 0.14);
+  --glass-shadow: 0 1px 2px #1f1b2e0a, 0 20px 44px -16px #1b2a6b33;
 }
 
 html,
@@ -90,9 +97,77 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Anton is all-caps by design; apply uppercase + tracking wherever the
-   display font is used so headlines read like the deck, not like a serif. */
-.font-serif {
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
+
+/* --- Glass card: frosted surface over the 3D scene / blob backdrop. --- */
+.glass-card {
+  background: var(--glass-bg);
+  border: 1.5px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+/* --- Cursor-reactive spotlight: a radial gradient positioned via
+   --x/--y custom properties, updated from JS on pointermove. Opacity is
+   toggled per-component (always-on for the hero, hover-only for cards). --- */
+.cursor-glow {
+  position: relative;
+  overflow: hidden;
+}
+.cursor-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    480px circle at var(--x, 50%) var(--y, 50%),
+    color-mix(in srgb, var(--glow-color, var(--color-magenta)) 16%, transparent),
+    transparent 70%
+  );
+  opacity: var(--glow-opacity, 0);
+  transition: opacity 0.25s ease;
+}
+
+/* --- Custom cursor: a small dot that follows the pointer with a spring
+   lag (see components/CustomCursor.tsx) and scales up over clickable
+   elements. Only enabled on fine-pointer, motion-tolerant desktops — see
+   the JS-side guard for touch/coarse-pointer/prefers-reduced-motion. --- */
+@media (hover: hover) and (pointer: fine) {
+  body.custom-cursor-active,
+  body.custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-glow::before {
+    display: none;
+  }
+}
+
+/* --- Animated gradient border ring, used on the model-status plaque so
+   the "not clinically validated" disclosure reads as deliberate UI, not
+   an afterthought. Degrades gracefully (static gradient) without
+   @property support. --- */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.gradient-border-wrap {
+  position: relative;
+  border-radius: var(--radius-card);
+  padding: 1.5px;
+  background: conic-gradient(from var(--angle), var(--color-violet), var(--color-magenta), var(--color-pink), var(--color-violet));
+  animation: gradient-spin 7s linear infinite;
+}
+@keyframes gradient-spin {
+  to {
+    --angle: 360deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gradient-border-wrap {
+    animation: none;
+  }
 }

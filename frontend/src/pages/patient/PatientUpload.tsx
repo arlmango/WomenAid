@@ -1,24 +1,13 @@
 import { useRef, useState, type ChangeEvent } from "react";
 import { motion } from "framer-motion";
-import { AlertTriangle, Camera, FileImage, Info, ImageOff, Clock, type LucideIcon } from "lucide-react";
+import { Camera, FileImage } from "lucide-react";
 import { apiPost, ApiError } from "../../lib/api";
 import { useAuth } from "../../lib/auth";
 import { getConsentFlag, setConsentFlag } from "../../lib/consentFlag";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { BottomSheet } from "../../components/BottomSheet";
+import { TriageMessageCard } from "../../components/TriageMessageCard";
 import type { ConsentResponse, UploadResult } from "../../types/api";
-
-// Purely presentational mapping for the fixed TRIAGE_LABELS enum (see
-// backend/app/models/risk_assessment.py) — chooses an icon/color, never
-// changes or infers meaning beyond the label the backend already sent.
-const TRIAGE_VISUALS: Record<string, { Icon: LucideIcon; className: string }> = {
-  URGENT_REVIEW: { Icon: AlertTriangle, className: "bg-gradient-to-br from-urgent to-rose-deep text-white" },
-  PRIORITY_REVIEW: { Icon: AlertTriangle, className: "bg-lavender text-white" },
-  ROUTINE_FOLLOWUP: { Icon: Info, className: "bg-rose-bg text-rose-deep" },
-  PENDING_REVIEW: { Icon: Clock, className: "bg-peach-bg text-peach-deep" },
-  INSUFFICIENT_QUALITY: { Icon: ImageOff, className: "bg-surface-3 text-ink-soft" },
-};
-const DEFAULT_TRIAGE_VISUAL = { Icon: Clock, className: "bg-surface-3 text-ink-soft" };
 
 export function PatientUpload() {
   const { t } = useLanguage();
@@ -133,33 +122,7 @@ export function PatientUpload() {
           </motion.div>
         )}
 
-        {result &&
-          (() => {
-            const visual = TRIAGE_VISUALS[result.triage_label] ?? DEFAULT_TRIAGE_VISUAL;
-            return (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-3"
-              >
-                <div className="flex items-center gap-3">
-                  <span className={`grid h-11 w-11 flex-none place-items-center rounded-full ${visual.className}`}>
-                    <visual.Icon size={20} strokeWidth={2.25} />
-                  </span>
-                  <div>
-                    <h2 className="font-serif text-lg text-navy">{t("uploadResultTitle")}</h2>
-                    <span className="inline-flex items-center rounded-full border-[1.5px] border-line bg-rose-bg px-2.5 py-0.5 text-xs font-semibold text-rose-deep">
-                      {result.triage_label}
-                    </span>
-                  </div>
-                </div>
-                <div className="rounded-input border-l-3 border-rose-pale bg-surface-2 p-3 text-sm text-ink">
-                  {result.patient_facing_message}
-                </div>
-                <p className="text-xs leading-relaxed text-ink-soft">{result.disclaimer}</p>
-              </motion.div>
-            );
-          })()}
+        {result && <TriageMessageCard result={result} />}
       </div>
 
       <BottomSheet

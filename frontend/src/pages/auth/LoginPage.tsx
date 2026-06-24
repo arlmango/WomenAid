@@ -6,6 +6,8 @@ import { login, ApiError } from "../../lib/api";
 import { useAuth, homePathForRole } from "../../lib/auth";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { FieldInput } from "../../components/FieldInput";
+import { CursorGlow } from "../../components/CursorGlow";
+import { SPRING_SOFT } from "../../lib/motion";
 
 export function LoginPage() {
   const { t } = useLanguage();
@@ -36,12 +38,8 @@ export function LoginPage() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
-      className="rounded-card border-[1.5px] border-line bg-surface p-7 shadow-soft-hover"
-    >
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING_SOFT}>
+      <CursorGlow glowColor="var(--color-magenta)" className="glass-card rounded-card p-7 shadow-soft-hover">
       <div className="mb-5 flex flex-col items-center text-center">
         <span className="mb-3 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta text-white shadow-btn">
           <HeartHandshake size={22} strokeWidth={2.25} />
@@ -94,6 +92,7 @@ export function LoginPage() {
         <UserPlus size={17} strokeWidth={2.25} />
         {t("registerLink")}
       </button>
+      </CursorGlow>
     </motion.div>
   );
 }

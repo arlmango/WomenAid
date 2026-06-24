@@ -5,6 +5,7 @@ import { apiPost, fetchPdfObjectUrl } from "../../lib/api";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { Modal } from "../../components/Modal";
 import { SkeletonRow, SkeletonCard } from "../../components/Skeleton";
+import { AnimatedNumber } from "../../components/AnimatedNumber";
 import { toast } from "../../lib/toast";
 import type {
   ClinicOverviewResponse,
@@ -55,12 +56,14 @@ function StatCard({
       >
         {String(index + 1).padStart(2, "0")}
       </span>
-      <div className="flex items-center gap-3 rounded-card-sharp border-[1.5px] border-line bg-surface p-4 pt-5">
+      <div className="glass-card flex items-center gap-3 rounded-card-sharp p-4 pt-5">
         <span className={`grid h-10 w-10 flex-none place-items-center rounded-full ${badgeClassName}`}>
           <Icon size={18} strokeWidth={2.25} />
         </span>
         <div>
-          <p className="text-xl font-semibold text-ink">{value}</p>
+          <p className="font-serif text-xl text-ink">
+            <AnimatedNumber value={value} />
+          </p>
           <p className="text-xs text-ink-soft">{label}</p>
         </div>
       </div>
@@ -164,20 +167,20 @@ export function ClinicQueue() {
                   onClick={() => setSelected(item)}
                   className="cursor-pointer border-t border-line hover:bg-surface-3"
                 >
-                  <td className="whitespace-nowrap px-4 py-3">{item.id}</td>
+                  <td className="whitespace-nowrap px-4 py-3 font-mono text-ink-soft">{item.id}</td>
                   <td className="whitespace-nowrap px-4 py-3">{item.patient_name ?? `#${item.patient_id}`}</td>
                   <td className="whitespace-nowrap px-4 py-3">
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                      className={`rounded-full px-2 py-0.5 font-mono text-xs font-medium ${
                         TRIAGE_BADGE[item.triage_label] ?? DEFAULT_TRIAGE_BADGE
                       }`}
                     >
                       {item.triage_label}
                     </span>
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3">{item.raw_score ?? "—"}</td>
-                  <td className="whitespace-nowrap px-4 py-3">{item.confidence ?? "—"}</td>
-                  <td className="whitespace-nowrap px-4 py-3 text-ink-soft">{item.model_status}</td>
+                  <td className="whitespace-nowrap px-4 py-3 font-mono">{item.raw_score ?? "—"}</td>
+                  <td className="whitespace-nowrap px-4 py-3 font-mono">{item.confidence ?? "—"}</td>
+                  <td className="whitespace-nowrap px-4 py-3 font-mono text-ink-soft">{item.model_status}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-ink-soft">
                     {new Date(item.created_at).toLocaleString()}
                   </td>
@@ -241,20 +244,20 @@ function ReviewModal({
           <dl className="grid grid-cols-2 gap-3 text-sm">
             <div>
               <dt className="text-ink-muted">{t("queueColLabel")}</dt>
-              <dd className="font-semibold text-ink">{item.triage_label}</dd>
+              <dd className="font-mono font-medium text-ink">{item.triage_label}</dd>
             </div>
             <div>
               <dt className="text-ink-muted">{t("queueColStatus")}</dt>
-              <dd className="font-semibold text-ink">{item.model_status}</dd>
+              <dd className="font-mono font-medium text-ink">{item.model_status}</dd>
             </div>
             {/* Clinician-only fields — never rendered on any /patient/* page. */}
             <div>
               <dt className="text-ink-muted">{t("queueColScore")}</dt>
-              <dd className="font-semibold text-ink">{item.raw_score ?? "—"}</dd>
+              <dd className="font-mono font-medium text-ink">{item.raw_score ?? "—"}</dd>
             </div>
             <div>
               <dt className="text-ink-muted">{t("queueColConfidence")}</dt>
-              <dd className="font-semibold text-ink">{item.confidence ?? "—"}</dd>
+              <dd className="font-mono font-medium text-ink">{item.confidence ?? "—"}</dd>
             </div>
           </dl>
 
