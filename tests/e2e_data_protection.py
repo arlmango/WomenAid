@@ -217,9 +217,15 @@ def main() -> int:
             stats = db.query(AnonymizedAssessmentStat).all()
             check("anonymized stat row exists with no patient linkage",
                   len(stats) == 1 and not hasattr(stats[0], "patient_id"))
+            # Upload now runs the real image-quality gate (not the old stub):
+            # the fake non-image deterministically fails it -> INSUFFICIENT_QUALITY.
+            # The safety property is unchanged — the anonymized row carries the
+            # triage label but never raw_score/confidence (the model has no such
+            # columns at all).
             check("anonymized stat carries triage_label but not raw_score/confidence",
-                  stats[0].triage_label == "STUB_UNAVAILABLE"
-                  and not hasattr(stats[0], "raw_score"))
+                  stats[0].triage_label == "INSUFFICIENT_QUALITY"
+                  and not hasattr(stats[0], "raw_score")
+                  and not hasattr(stats[0], "confidence"))
         finally:
             db.close()
 
