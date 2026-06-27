@@ -117,6 +117,7 @@ export const translations = {
     uploadTitle: "Загрузка снимка",
     uploadButton: "Выбрать снимок",
     uploadSubmit: "Отправить",
+    uploadSubmitBusy: "Отправляем…",
     uploadResultTitle: "Результат",
     consentRequiredTitle: "Нужно согласие",
     consentText:
@@ -255,6 +256,7 @@ export const translations = {
     uploadTitle: "Сурет жүктеу",
     uploadButton: "Сурет таңдау",
     uploadSubmit: "Жіберу",
+    uploadSubmitBusy: "Жіберілуде…",
     uploadResultTitle: "Нәтиже",
     consentRequiredTitle: "Келісім қажет",
     consentText: "Мен WomenAId демо-режимінде жатыр мойны суретін AI өңдеуге келісемін.",

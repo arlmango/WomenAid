@@ -69,7 +69,6 @@ function Hero() {
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               to="/auth/register"
-              data-cursor-interactive
               className="flex min-h-12 w-full items-center justify-center gap-2 rounded-btn bg-gradient-to-br from-pink to-magenta px-7 font-bold uppercase tracking-wide text-white shadow-btn transition-shadow hover:shadow-btn-hover sm:w-auto"
             >
               <UserPlus size={18} strokeWidth={2.25} />
@@ -77,7 +76,6 @@ function Hero() {
             </Link>
             <Link
               to="/auth"
-              data-cursor-interactive
               className="flex min-h-12 w-full items-center justify-center rounded-btn border-2 border-navy px-7 text-sm font-semibold text-navy transition-colors hover:bg-surface-2 sm:hidden"
             >
               {t("landingCtaLogin")}
@@ -196,7 +194,6 @@ export function Landing() {
           <LanguageToggle />
           <Link
             to="/auth"
-            data-cursor-interactive
             className="hidden min-h-9 items-center rounded-btn border-2 border-navy px-4 text-sm font-semibold text-navy transition-colors hover:bg-surface-2 sm:flex"
           >
             {t("landingCtaLogin")}

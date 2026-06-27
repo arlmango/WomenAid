@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
 
 // Centered, desktop-style modal — used by the clinic cabinet (review,
 // raw_score/confidence detail). Patient flows use <BottomSheet/> instead.
@@ -37,10 +38,10 @@ export function Modal({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-full px-2 py-1 text-ink-soft hover:bg-surface-2"
+                className="grid h-8 w-8 flex-none place-items-center rounded-full text-ink-soft hover:bg-surface-2"
                 aria-label="Закрыть"
               >
-                ✕
+                <X size={18} strokeWidth={2.25} />
               </button>
             </div>
             {children}

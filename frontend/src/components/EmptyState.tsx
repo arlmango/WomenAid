@@ -21,8 +21,8 @@ export function EmptyState({
         <Icon size={26} strokeWidth={2} />
       </span>
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">{caption}</p>
-        {detail && <p className="mt-1.5 text-sm text-ink-soft">{detail}</p>}
+        <p className="text-base font-semibold text-ink">{caption}</p>
+        {detail && <p className="mt-1 text-sm text-ink-soft">{detail}</p>}
       </div>
     </div>
   );

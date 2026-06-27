@@ -80,7 +80,7 @@ export function PatientUpload() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-serif text-xl text-navy">{t("uploadTitle")}</h1>
+      <h1 className="font-serif text-2xl text-navy">{t("uploadTitle")}</h1>
 
       <div className="rounded-card border-[1.5px] border-line bg-surface p-5 shadow-soft">
         <input
@@ -117,7 +117,7 @@ export function PatientUpload() {
               onClick={handleSubmit}
               className="flex min-h-11 w-full items-center justify-center rounded-btn bg-gradient-to-br from-pink to-magenta px-5 font-bold uppercase tracking-wide text-white shadow-btn disabled:from-rose-pale disabled:to-rose-pale disabled:shadow-none"
             >
-              {uploading ? "…" : t("uploadSubmit")}
+              {uploading ? t("uploadSubmitBusy") : t("uploadSubmit")}
             </button>
           </motion.div>
         )}

@@ -51,7 +51,7 @@ export function PatientSymptoms() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-serif text-xl text-navy">{t("navSymptoms")}</h1>
+      <h1 className="font-serif text-2xl text-navy">{t("navSymptoms")}</h1>
 
       <div className="rounded-card border-[1.5px] border-line bg-surface p-5 shadow-soft">
         <label htmlFor="symptom-text" className="mb-1.5 block text-xs font-medium text-ink-soft">

@@ -29,7 +29,7 @@ export function PatientSchedule() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-serif text-xl text-navy">{t("navSchedule")}</h1>
+      <h1 className="font-serif text-2xl text-navy">{t("navSchedule")}</h1>
       {loading || !data ? (
         <SkeletonCard />
       ) : (
@@ -43,24 +43,26 @@ export function PatientSchedule() {
                   <visual.Icon size={22} strokeWidth={2.25} />
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-ink">{t(statusKey)}</p>
-                  <p className="text-xs text-ink-muted">{data.screening_status}</p>
+                  <p className="text-base font-semibold text-ink">{t(statusKey)}</p>
+                  <p className="font-mono text-xs text-ink-muted">{data.screening_status}</p>
                 </div>
               </div>
 
-              <dl className="space-y-2 border-t-[1.5px] border-line pt-3 text-sm">
-                <div className="flex justify-between gap-3">
-                  <dt className="text-ink-soft">{t("scheduleLastDone")}</dt>
-                  <dd className="font-medium text-ink">
+              <dl className="grid grid-cols-2 gap-3 border-t-[1.5px] border-line pt-4">
+                <div
+                  className={`rounded-input bg-surface-2 p-3 ${data.next_due_date ? "" : "col-span-2"}`}
+                >
+                  <dt className="text-xs text-ink-soft">{t("scheduleLastDone")}</dt>
+                  <dd className="mt-0.5 text-sm font-semibold text-ink">
                     {data.last_screening_date
                       ? new Date(data.last_screening_date).toLocaleDateString()
                       : t("scheduleNoLastDone")}
                   </dd>
                 </div>
                 {data.next_due_date && (
-                  <div className="flex justify-between gap-3">
-                    <dt className="text-ink-soft">{t("scheduleNextDue")}</dt>
-                    <dd className="font-medium text-ink">
+                  <div className="rounded-input bg-surface-2 p-3">
+                    <dt className="text-xs text-ink-soft">{t("scheduleNextDue")}</dt>
+                    <dd className="mt-0.5 text-sm font-semibold text-ink">
                       {new Date(data.next_due_date).toLocaleDateString()}
                     </dd>
                   </div>

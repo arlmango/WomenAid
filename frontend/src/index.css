@@ -97,6 +97,23 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* --- Keyboard focus (accessibility quality floor) ---
+   One visible ring for every interactive control. Deliberately `outline`
+   (not a box-shadow ring): outline is painted outside the border box and is
+   NOT clipped by `overflow: hidden` ancestors — several cards/nav items here
+   clip their content, which would silently swallow a box-shadow ring.
+   Mouse users don't see it (`:focus-visible` only); keyboard users always do.
+   Inputs/textareas keep their own focus ring set in the component classes. */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible,
+summary:focus-visible {
+  outline: 2.5px solid var(--color-indigo);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 
 /* --- Glass card: frosted surface over the 3D scene / blob backdrop. --- */
 .glass-card {
@@ -126,17 +143,6 @@ body {
   );
   opacity: var(--glow-opacity, 0);
   transition: opacity 0.25s ease;
-}
-
-/* --- Custom cursor: a small dot that follows the pointer with a spring
-   lag (see components/CustomCursor.tsx) and scales up over clickable
-   elements. Only enabled on fine-pointer, motion-tolerant desktops — see
-   the JS-side guard for touch/coarse-pointer/prefers-reduced-motion. --- */
-@media (hover: hover) and (pointer: fine) {
-  body.custom-cursor-active,
-  body.custom-cursor-active * {
-    cursor: none !important;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

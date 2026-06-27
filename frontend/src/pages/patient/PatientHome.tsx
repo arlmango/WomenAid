@@ -8,15 +8,14 @@ import { CursorGlow } from "../../components/CursorGlow";
 import { SPRING_SOFT } from "../../lib/motion";
 import type { TranslationKey } from "../../i18n/translations";
 
-// Numbered badge gradients alternate gold->pink / pink->magenta per card,
-// matching the deck's "stat/feature card" number-badge treatment.
+// Four independent destinations, not an ordered sequence — so no numbered
+// markers (they'd imply a process that isn't there).
 const CARDS: {
   to: string;
   Icon: LucideIcon;
   titleKey: TranslationKey;
   descKey: TranslationKey;
   badge: string;
-  numberGradient: string;
 }[] = [
   {
     to: "/patient/upload",
@@ -24,7 +23,6 @@ const CARDS: {
     titleKey: "navUpload",
     descKey: "navUploadDesc",
     badge: "bg-rose-bg text-rose-deep",
-    numberGradient: "from-gold to-pink",
   },
   {
     to: "/patient/symptoms",
@@ -32,7 +30,6 @@ const CARDS: {
     titleKey: "navSymptoms",
     descKey: "navSymptomsDesc",
     badge: "bg-lavender-bg text-lavender-deep",
-    numberGradient: "from-pink to-magenta",
   },
   {
     to: "/patient/schedule",
@@ -40,7 +37,6 @@ const CARDS: {
     titleKey: "navSchedule",
     descKey: "navScheduleDesc",
     badge: "bg-peach-bg text-peach-deep",
-    numberGradient: "from-gold to-pink",
   },
   {
     to: "/patient/consent",
@@ -48,7 +44,6 @@ const CARDS: {
     titleKey: "navConsent",
     descKey: "navConsentDesc",
     badge: "bg-mint-bg text-mint-deep",
-    numberGradient: "from-pink to-magenta",
   },
 ];
 
@@ -58,6 +53,8 @@ export function PatientHome() {
 
   return (
     <div className="space-y-5">
+      {/* Summary card floats on the ambient gradient backdrop — the one place
+          in the cabinet where glass has something to frost over. */}
       <CursorGlow glowColor="var(--color-magenta)" className="glass-card rounded-card p-5">
         <p className="text-xs font-medium text-ink-muted">
           {t("homeGreeting")}, <span className="text-magenta">{session?.username}</span>
@@ -68,25 +65,19 @@ export function PatientHome() {
         </p>
       </CursorGlow>
 
-      <div className="grid grid-cols-2 gap-x-3 gap-y-6">
+      <div className="grid grid-cols-2 gap-3">
         {CARDS.map((card, i) => (
           <motion.div
             key={card.to}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...SPRING_SOFT, delay: i * 0.05 }}
-            className="relative"
+            className="h-full"
           >
-            <span
-              className={`absolute -top-3 left-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br ${card.numberGradient} text-xs font-bold text-white shadow-btn`}
-            >
-              {String(i + 1).padStart(2, "0")}
-            </span>
             <CursorGlow glowColor="var(--color-violet)" className="h-full rounded-card-sharp">
               <Link
                 to={card.to}
-                data-cursor-interactive
-                className="glass-card flex h-full flex-col gap-2.5 rounded-card-sharp p-4 pt-6 transition-all hover:-translate-y-0.5 hover:shadow-soft-hover"
+                className="flex h-full flex-col gap-2.5 rounded-card-sharp border-[1.5px] border-line bg-surface p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-soft-hover"
               >
                 <div className="flex items-center justify-between">
                   <span className={`grid h-9 w-9 place-items-center rounded-full ${card.badge}`}>

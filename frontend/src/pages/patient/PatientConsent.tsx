@@ -54,7 +54,7 @@ export function PatientConsent() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-serif text-xl text-navy">{t("navConsent")}</h1>
+      <h1 className="font-serif text-2xl text-navy">{t("navConsent")}</h1>
 
       <div className="rounded-card border-[1.5px] border-line bg-surface p-5 shadow-soft">
         <div className="mb-4 flex items-center gap-3">
@@ -65,7 +65,7 @@ export function PatientConsent() {
           >
             {given ? <CheckCircle2 size={20} strokeWidth={2.25} /> : <ShieldQuestion size={20} strokeWidth={2.25} />}
           </span>
-          <p className="text-sm font-semibold text-ink">
+          <p className="text-base font-semibold text-ink">
             {given ? t("consentGiven") : t("consentRequiredTitle")}
           </p>
         </div>
