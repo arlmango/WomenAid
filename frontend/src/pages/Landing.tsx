@@ -1,5 +1,5 @@
 import { lazy, Suspense, useRef } from "react";
-import { motion, useMotionTemplate, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Brain, CalendarClock, Check, ShieldCheck, Sparkles, UserPlus } from "lucide-react";
 import { GradientBackdrop } from "../components/GradientBackdrop";
@@ -37,19 +37,9 @@ const CURRENT_STEP = ROADMAP.findIndex((s) => s.status === "current") + 1;
 
 function Hero() {
   const { t } = useLanguage();
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  // Fraunces' opsz axis redraws the serifs themselves as it grows — not
-  // just "bolder" but genuinely more elegant — so animating wght and opsz
-  // together as the hero scrolls reads as the text "coming alive". Axis
-  // tags must be double-quoted and comma-separated per the CSS spec, or
-  // the browser silently drops the whole value.
-  const weight = useTransform(scrollYProgress, [0, 1], [400, 600]);
-  const opticalSize = useTransform(scrollYProgress, [0, 1], [9, 72]);
-  const fontVariationSettings = useMotionTemplate`"wght" ${weight}, "opsz" ${opticalSize}`;
 
   return (
-    <motion.div ref={ref} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={SPRING_SOFT}>
+    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={SPRING_SOFT}>
       <CursorGlow alwaysOn glowColor="var(--color-magenta)" className="rounded-card">
         <div className="px-2 py-2 text-center">
           <span className="mb-5 inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-line bg-surface px-3.5 py-1 text-xs font-semibold uppercase tracking-wide text-magenta shadow-soft">
@@ -57,12 +47,12 @@ function Hero() {
             {t("landingTag")}
           </span>
 
-          <motion.h2 className="font-serif text-4xl leading-tight sm:text-6xl" style={{ fontVariationSettings }}>
+          <h2 className="font-serif text-4xl font-black leading-[1.1] tracking-tight sm:text-6xl">
             <span className="text-navy">{t("landingHeadlineStart")} </span>
             <span className="bg-gradient-to-br from-pink via-magenta to-indigo bg-clip-text text-transparent">
               {t("landingHeadlineHighlight")}
             </span>
-          </motion.h2>
+          </h2>
 
           <p className="mx-auto mt-5 max-w-xl text-base text-ink-soft sm:text-lg">{t("landingSubtext")}</p>
 

@@ -7,6 +7,7 @@ import { getConsentFlag, setConsentFlag } from "../../lib/consentFlag";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { BottomSheet } from "../../components/BottomSheet";
 import { TriageMessageCard } from "../../components/TriageMessageCard";
+import { Button } from "../../components/ui";
 import type { ConsentResponse, UploadResult } from "../../types/api";
 
 export function PatientUpload() {
@@ -82,7 +83,7 @@ export function PatientUpload() {
     <div className="space-y-4">
       <h1 className="font-serif text-2xl text-navy">{t("uploadTitle")}</h1>
 
-      <div className="rounded-card border-[1.5px] border-line bg-surface p-5 shadow-soft">
+      <div className="rounded-card border border-navy/15 bg-surface p-5 shadow-soft">
         <input
           ref={fileInputRef}
           type="file"
@@ -96,7 +97,7 @@ export function PatientUpload() {
           <button
             type="button"
             onClick={handlePickFile}
-            className="flex w-full flex-col items-center gap-2.5 rounded-card-sharp border-2 border-dashed border-line bg-rose-bg/40 px-5 py-8 text-center transition-colors hover:bg-rose-bg/70"
+            className="flex w-full flex-col items-center gap-2.5 rounded-card border-2 border-dashed border-pink/50 bg-rose-bg/40 px-5 py-8 text-center transition-colors hover:bg-rose-bg/70"
           >
             <span className="grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta text-white shadow-btn">
               <Camera size={22} strokeWidth={2.25} />
@@ -107,18 +108,18 @@ export function PatientUpload() {
 
         {file && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
-            <div className="flex items-center gap-2.5 rounded-input border-[1.5px] border-line bg-surface-2 px-3.5 py-2.5">
+            <div className="flex items-center gap-2.5 rounded-input border border-navy/15 bg-surface-2 px-3.5 py-2.5">
               <FileImage size={18} className="flex-none text-rose-deep" />
               <p className="truncate text-sm text-ink-soft">{file.name}</p>
             </div>
-            <button
+            <Button
               type="button"
-              disabled={uploading}
+              loading={uploading}
               onClick={handleSubmit}
-              className="flex min-h-11 w-full items-center justify-center rounded-btn bg-gradient-to-br from-pink to-magenta px-5 font-bold uppercase tracking-wide text-white shadow-btn disabled:from-rose-pale disabled:to-rose-pale disabled:shadow-none"
+              className="w-full font-bold uppercase tracking-wide"
             >
               {uploading ? t("uploadSubmitBusy") : t("uploadSubmit")}
-            </button>
+            </Button>
           </motion.div>
         )}
 
@@ -132,21 +133,17 @@ export function PatientUpload() {
       >
         <p className="mb-4 text-sm text-ink-soft">{t("consentText")}</p>
         <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => setConsentSheetOpen(false)}
-            className="min-h-11 flex-1 rounded-btn border-2 border-navy text-sm font-semibold text-navy"
-          >
+          <Button type="button" variant="outline" onClick={() => setConsentSheetOpen(false)} className="flex-1">
             {t("cancelButton")}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            disabled={consenting}
+            loading={consenting}
             onClick={handleGiveConsent}
-            className="min-h-11 flex-1 rounded-btn bg-gradient-to-br from-pink to-magenta text-sm font-bold uppercase tracking-wide text-white shadow-btn disabled:from-rose-pale disabled:to-rose-pale"
+            className="flex-1 font-bold uppercase tracking-wide"
           >
             {t("consentGive")}
-          </button>
+          </Button>
         </div>
       </BottomSheet>
     </div>

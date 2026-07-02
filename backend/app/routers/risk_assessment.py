@@ -13,6 +13,8 @@ Access rules (CLAUDE.md):
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import APIRouter, Depends, File, HTTPException, Response, UploadFile, status
 from sqlalchemy.orm import Session
 
@@ -20,7 +22,7 @@ from app.audit import record_audit
 from app.consent import require_active_consent
 from app.db.database import get_db
 from app.deps import get_current_clinician, verify_patient_access
-from app.encryption import FileEncryptionNotConfigured
+from app.encryption import FileEncryptionNotConfigured, decrypt_bytes
 from app.ml.image_quality import assess_image_quality
 from app.ml.inference import DISCLAIMER, PENDING_REVIEW_MESSAGE, patient_message_for_quality_failure
 from app.models.patient import Patient
@@ -161,6 +163,57 @@ def assessment_report_pdf(
         content=pdf,
         media_type="application/pdf",
         headers={"Content-Disposition": f'inline; filename="assessment-{assessment.id}.pdf"'},
+    )
+
+
+@clinic_router.get("/{assessment_id}/image")
+def assessment_image(
+    assessment_id: int,
+    current_user: User = Depends(get_current_clinician),
+    db: Session = Depends(get_db),
+) -> Response:
+    """Serve the original uploaded snapshot for in-cabinet review
+    (clinician/admin only — same access rule as the PDF report).
+
+    The file is decrypted only for this response; on-disk it stays encrypted
+    (app/storage.py). Viewing is audited like the PDF report: it is access to
+    patient data. `Cache-Control: no-store` keeps the decrypted image out of
+    shared caches.
+    """
+    assessment = (
+        db.query(RiskAssessment).filter(RiskAssessment.id == assessment_id).first()
+    )
+    if assessment is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Assessment not found")
+    if not assessment.image_path:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="No image stored for this assessment")
+
+    try:
+        encrypted = Path(assessment.image_path).read_bytes()
+    except FileNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Image file not found (possibly purged by retention)")
+    data = decrypt_bytes(encrypted)
+
+    if data[:3] == b"\xff\xd8\xff":
+        media_type = "image/jpeg"
+    elif data[:8] == b"\x89PNG\r\n\x1a\n":
+        media_type = "image/png"
+    else:
+        media_type = "application/octet-stream"
+
+    record_audit(db, current_user, "view_image", "risk_assessment",
+                 assessment.id, details={"patient_id": assessment.patient_id})
+
+    return Response(
+        content=data,
+        media_type=media_type,
+        headers={
+            "Content-Disposition": f'inline; filename="assessment-{assessment.id}"',
+            "Cache-Control": "no-store",
+        },
     )
 
 

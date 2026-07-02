@@ -6,7 +6,7 @@ import { register, getConsentText, ApiError, type ConsentTextResponse } from "..
 import { useAuth, homePathForRole } from "../../lib/auth";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { FieldInput } from "../../components/FieldInput";
-import { CursorGlow } from "../../components/CursorGlow";
+import { Button, Card } from "../../components/ui";
 import { SPRING_SOFT } from "../../lib/motion";
 
 // Real self-registration: one plain form, no multi-step/motion choreography.
@@ -87,51 +87,52 @@ export function RegisterPage() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING_SOFT}>
-      <CursorGlow glowColor="var(--color-magenta)" className="glass-card rounded-card p-7 shadow-soft-hover">
-      <div className="mb-5 flex flex-col items-center text-center">
-        <span className="mb-3 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta text-white shadow-btn">
+      <div className="mb-7">
+        <span className="mb-4 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta text-white shadow-btn">
           <UserPlus size={22} strokeWidth={2.25} />
         </span>
-        <h2 className="font-serif text-2xl text-navy">{t("registerTitle")}</h2>
+        <h2 className="font-serif text-3xl text-navy">{t("registerTitle")}</h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3.5">
-        <FieldInput
-          id="reg-display-name"
-          label={t("displayNameLabel")}
-          icon={User}
-          type="text"
-          required
-          value={displayName}
-          onChange={setDisplayName}
-        />
-        <FieldInput
-          id="reg-birth-date"
-          label={t("birthDateLabel")}
-          icon={CalendarDays}
-          type="date"
-          required
-          max={new Date().toISOString().slice(0, 10)}
-          value={birthDate}
-          onChange={setBirthDate}
-        />
-        <FieldInput
-          id="reg-region"
-          label={t("regionLabel")}
-          icon={MapPin}
-          type="text"
-          value={region}
-          onChange={setRegion}
-        />
-        <FieldInput
-          id="reg-phone"
-          label={t("phoneLabel")}
-          icon={Phone}
-          type="tel"
-          placeholder="+7 700 000 00 00"
-          value={phone}
-          onChange={setPhone}
-        />
+        <div className="grid gap-3.5 sm:grid-cols-2">
+          <FieldInput
+            id="reg-display-name"
+            label={t("displayNameLabel")}
+            icon={User}
+            type="text"
+            required
+            value={displayName}
+            onChange={setDisplayName}
+          />
+          <FieldInput
+            id="reg-birth-date"
+            label={t("birthDateLabel")}
+            icon={CalendarDays}
+            type="date"
+            required
+            max={new Date().toISOString().slice(0, 10)}
+            value={birthDate}
+            onChange={setBirthDate}
+          />
+          <FieldInput
+            id="reg-region"
+            label={t("regionLabel")}
+            icon={MapPin}
+            type="text"
+            value={region}
+            onChange={setRegion}
+          />
+          <FieldInput
+            id="reg-phone"
+            label={t("phoneLabel")}
+            icon={Phone}
+            type="tel"
+            placeholder="+7 700 000 00 00"
+            value={phone}
+            onChange={setPhone}
+          />
+        </div>
         <FieldInput
           id="reg-username"
           label={t("usernameLabel")}
@@ -143,79 +144,85 @@ export function RegisterPage() {
           value={username}
           onChange={setUsername}
         />
-        <FieldInput
-          id="reg-password"
-          label={t("passwordLabel")}
-          icon={Lock}
-          type="password"
-          autoComplete="new-password"
-          required
-          minLength={8}
-          value={password}
-          onChange={setPassword}
-        />
-        <FieldInput
-          id="reg-confirm"
-          label={t("confirmPasswordLabel")}
-          icon={Lock}
-          type="password"
-          autoComplete="new-password"
-          required
-          minLength={8}
-          value={confirmPassword}
-          onChange={setConfirmPassword}
-        />
-
-        {/* Full consent text, always visible — not hidden behind a small
-            link (CLAUDE.md treats this as a safety requirement). */}
-        <div className="max-h-40 overflow-y-auto rounded-input border-[1.5px] border-line bg-surface-2 p-3 text-xs leading-relaxed text-ink">
-          {consentLoading ? (
-            <span className="text-ink-muted">{t("consentLoadingText")}</span>
-          ) : consentText ? (
-            consentText.text
-          ) : (
-            <span className="text-urgent">{t("consentLoadErrorText")}</span>
-          )}
-        </div>
-        <label className="flex cursor-pointer items-start gap-2.5 rounded-input border-[1.5px] border-line bg-surface p-3">
-          <input
-            type="checkbox"
-            checked={consent}
-            onChange={(e) => setConsent(e.target.checked)}
-            disabled={!consentText}
-            className="mt-0.5 h-4.5 w-4.5 flex-none accent-rose-deep"
+        <div className="grid gap-3.5 sm:grid-cols-2">
+          <FieldInput
+            id="reg-password"
+            label={t("passwordLabel")}
+            icon={Lock}
+            type="password"
+            autoComplete="new-password"
+            required
+            minLength={8}
+            value={password}
+            onChange={setPassword}
           />
-          <span className="flex items-start gap-1.5 text-sm text-ink">
-            <ShieldCheck size={15} className="mt-0.5 flex-none text-rose-deep" />
-            {t("consentCheckboxLabel")}
-          </span>
-        </label>
+          <FieldInput
+            id="reg-confirm"
+            label={t("confirmPasswordLabel")}
+            icon={Lock}
+            type="password"
+            autoComplete="new-password"
+            required
+            minLength={8}
+            value={confirmPassword}
+            onChange={setConfirmPassword}
+          />
+        </div>
 
-        <button
+        {/* Medical consent in the strict med-card style (thin deep-blue
+            border) — this is a legal/medical document, not marketing. Full
+            text always visible, not hidden behind a link (CLAUDE.md treats
+            this as a safety requirement). */}
+        <Card variant="med" className="shadow-none">
+          <div className="flex items-center gap-2 border-b border-navy/15 px-4 py-2.5">
+            <ShieldCheck size={15} className="flex-none text-magenta-deep" />
+            <span className="font-display text-xs font-extrabold uppercase tracking-wider text-navy">
+              {t("consentSectionTitle")}
+            </span>
+          </div>
+          <div className="max-h-40 overflow-y-auto px-4 py-3 text-xs leading-relaxed text-ink">
+            {consentLoading ? (
+              <span className="text-ink-muted">{t("consentLoadingText")}</span>
+            ) : consentText ? (
+              consentText.text
+            ) : (
+              <span className="text-urgent">{t("consentLoadErrorText")}</span>
+            )}
+          </div>
+          <label className="flex cursor-pointer items-start gap-2.5 border-t border-navy/15 px-4 py-3">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              disabled={!consentText}
+              className="mt-0.5 h-4.5 w-4.5 flex-none accent-magenta-deep"
+            />
+            <span className="text-sm text-ink">{t("consentCheckboxLabel")}</span>
+          </label>
+        </Card>
+
+        <Button
           type="submit"
+          size="lg"
+          loading={busy}
           disabled={busy || !canSubmit}
-          className="flex min-h-11 w-full items-center justify-center rounded-btn bg-gradient-to-br from-pink to-magenta px-5 font-bold uppercase tracking-wide text-white shadow-btn transition-shadow hover:shadow-btn-hover disabled:cursor-not-allowed disabled:from-rose-pale disabled:to-rose-pale disabled:shadow-none"
+          className="w-full font-bold uppercase tracking-wide"
         >
           {busy ? t("registerButtonBusy") : t("registerButton")}
-        </button>
+        </Button>
         {error && <p className="text-sm text-urgent">{error}</p>}
       </form>
 
       <div className="my-5 flex items-center gap-3">
-        <span className="h-px flex-1 bg-line" />
+        <span className="h-px flex-1 bg-navy/15" />
         <span className="text-xs font-medium text-ink-muted">{t("haveAccountAlready")}</span>
-        <span className="h-px flex-1 bg-line" />
+        <span className="h-px flex-1 bg-navy/15" />
       </div>
 
-      <button
-        type="button"
-        onClick={() => navigate("/auth")}
-        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-btn border-2 border-navy bg-transparent text-sm font-semibold text-navy transition-colors hover:bg-surface-2"
-      >
+      <Button type="button" variant="outline" size="lg" onClick={() => navigate("/auth")} className="w-full">
         <LogIn size={17} strokeWidth={2.25} />
         {t("loginLink")}
-      </button>
-      </CursorGlow>
+      </Button>
     </motion.div>
   );
 }

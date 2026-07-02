@@ -1,87 +1,104 @@
 @import "tailwindcss";
 
-/* WomenAId design tokens — pitch-deck palette: warm cream background, bold
-   navy/indigo/violet/magenta/pink brand colors, soft blurred "blob"
-   gradients as the signature background motif, sharp-ish dark-outlined
-   cards instead of glassmorphism. Legacy semantic names (rose/lavender/
-   peach/mint/urgent/line/ink) are kept so most existing utility classes
-   (bg-rose, text-mint-deep, border-line, ...) automatically pick up the
-   new palette without touching every component. */
+/* WomenAId design system — brand book "warm MedTech / FemTech".
+   Canvas: warm cream (#FEFCF8), never stark white. Ink: deep indigo
+   (#1E1B4B), never plain black. Serious UI: deep blue/indigo. Accents:
+   vibrant magenta/pink + soft peach. Signature motif: "mesh grain" —
+   large blurred aurora blobs (pink/purple/peach) under a subtle CSS
+   noise overlay (`.grain`).
+
+   Legacy semantic names (rose/lavender/peach/mint/gold/urgent/line/ink…)
+   are kept and repointed at the brand-book values so every existing
+   utility class (bg-rose, text-mint-deep, border-line, …) rethemes
+   without touching each component. New code should prefer the canonical
+   brand tokens. Triage/status colors are clinical semantics, not brand —
+   they must stay unambiguous (red = urgent, amber = priority, green = ok). */
 @theme {
-  /* --- Backgrounds --- */
-  --color-bg: #f8f4eb;
+  /* --- Backgrounds: warm cream canvas, white reserved for cards --- */
+  --color-bg: #fefcf8;
   --color-surface: #ffffff;
-  --color-surface-2: #fcf8ef;
-  --color-surface-3: #f3ecdc;
+  --color-surface-2: #faf6ee;
+  --color-surface-3: #f3ecdd;
 
-  /* --- Brand core (pitch deck) --- */
-  --color-navy: #1b2a6b;
-  --color-indigo: #4a4fe8;
-  --color-violet: #9b6fe0;
-  --color-magenta: #c2399e;
-  --color-pink: #f2628f;
-  --color-pink-soft: #f6c1da;
+  /* --- Brand core --- */
+  --color-navy: #1e1b4b; /* indigo-950 — headings, ink, med-card borders */
+  --color-indigo: #4338ca; /* indigo-700 — primary serious UI, AA w/ white */
+  --color-violet: #8b5cf6; /* gradient partner */
+  --color-magenta: #d1249f; /* vibrant accent — gradients, large text */
+  --color-magenta-deep: #9d1b78; /* text-safe magenta on light bg */
+  --color-pink: #f0569b;
+  --color-pink-soft: #f9c7de;
+  --color-peach: #ffd9b8; /* soft peach accent */
+  --color-peach-deep: #8a5a16; /* text-safe on peach tints */
+  --color-peach-bg: #fdeedc;
 
-  /* --- Decorative blob gradients --- */
-  --color-blob-pink: #ff8fc4;
+  /* --- Decorative aurora blobs (mesh-grain backdrop) --- */
+  --color-blob-pink: #ff9ecd;
   --color-blob-orange: #ffc089;
   --color-blob-peach: #ffd9b3;
-  --color-blob-lavender: #d9c2f0;
+  --color-blob-lavender: #d8c3f5;
 
-  /* --- Status accents --- */
+  /* --- Status accents (clinical semantics — keep unambiguous) --- */
   --color-mint: #5fe8b0;
-  --color-mint-deep: #1b2a6b;
+  --color-mint-deep: #0f766e; /* teal-700, text-safe "ok/healthy" */
   --color-mint-bg: #e3fbf1;
   --color-gold: #f2a65a;
   --color-gold-deep: #8a5a16;
   --color-gold-bg: #fdeedc;
-  --color-coral: #e63950;
-  --color-coral-bg: #fde3e7;
+  --color-coral: #e11d48;
+  --color-coral-bg: #fce8ec;
+  --color-urgent: #e11d48;
+  --color-urgent-bg: #fce8ec;
 
-  /* --- Legacy semantic names, repointed at the new palette --- */
-  --color-rose: #f2628f; /* brand pink */
-  --color-rose-deep: #c2399e; /* magenta */
-  --color-rose-pale: #f6c1da; /* pink-soft */
-  --color-rose-bg: #fdeaf1;
-  --color-blush: #ff8fc4; /* blob-pink, used in from-rose to-blush buttons */
+  /* --- Legacy semantic names, repointed at the brand palette --- */
+  --color-rose: #f0569b; /* brand pink */
+  --color-rose-deep: #9d1b78; /* magenta-deep (text-safe) */
+  --color-rose-pale: #f9c7de; /* pink-soft */
+  --color-rose-bg: #fdeaf3;
+  --color-blush: #ff9ecd; /* blob-pink, used in from-rose to-blush buttons */
 
-  --color-lavender: #9b6fe0; /* violet */
-  --color-lavender-deep: #4a4fe8; /* indigo */
+  --color-lavender: #8b5cf6; /* violet */
+  --color-lavender-deep: #4338ca; /* indigo */
   --color-lavender-bg: #ede6fb;
 
-  --color-peach: #ffd9b3; /* blob-peach */
-  --color-peach-deep: #8a5a16; /* gold-deep */
-  --color-peach-bg: #fdeedc; /* gold-bg */
+  /* --- Ink: deep indigo, never plain black --- */
+  --color-ink: #1e1b4b;
+  --color-ink-soft: #494577;
+  --color-ink-muted: #67628f;
+  --color-line: #1e1b4b; /* thin deep-blue outline for MedTech cards */
 
-  --color-urgent: #e63950; /* coral */
-  --color-urgent-bg: #fde3e7;
+  /* --- Fonts ---
+     display: Montserrat — bold geometric sans, the pitch-deck voice.
+     `--font-serif` is a shim: existing `font-serif` headings render in
+     the display face until pages migrate to `font-display` (steps 2–4).
+     mono: technical/system data ONLY (model_status, triage_label, IDs) —
+     an honesty signal required by CLAUDE.md, not decoration. */
+  --font-display: "Montserrat", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-serif: "Montserrat", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  /* Manrope, not the brief's Plus Jakarta Sans/Poppins: the app is ru/kz
+     and those two ship no Cyrillic — body text would silently fall back
+     to the system font. Manrope is the same modern-geometric voice WITH
+     full Cyrillic. Montserrat (display) covers Cyrillic natively. */
+  --font-sans: "Manrope", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
 
-  --color-ink: #1f1b2e;
-  --color-ink-soft: #5b5468;
-  --color-ink-muted: #8b86a0;
-  --color-line: #2a2440; /* dark outline, NOT a pale line anymore */
-
-  /* --- Fonts (3-font flagship system) --- */
-  --font-serif: "Fraunces", "Iowan Old Style", serif; /* display: H1/H2, hero, big metrics — variable opsz+wght */
-  --font-sans: "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif; /* body: text, buttons, nav, forms */
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace; /* technical-only: model_status, triage_label, IDs */
-
-  /* --- Sharper corners than the old "rounded-2xl" glass style --- */
+  /* --- Radii: `card` = strict MedTech, `card-soft` = FemTech gradient cards --- */
   --radius-card: 12px;
-  --radius-card-sharp: 4px; /* stat/feature 3-in-a-row cards */
+  --radius-card-soft: 24px;
+  --radius-card-sharp: 4px; /* stat/feature 3-in-a-row tiles */
   --radius-btn: 10px;
   --radius-input: 8px;
 
-  --shadow-btn: 0 4px 14px #f2628f4a;
-  --shadow-btn-hover: 0 6px 20px #f2628f66;
-  --shadow-soft: 0 1px 2px #1f1b2e0a, 0 10px 24px -10px #1f1b2e22;
-  --shadow-soft-hover: 0 1px 2px #1f1b2e0a, 0 14px 32px -10px #c2399e3d;
+  --shadow-btn: 0 4px 14px #d1249f42;
+  --shadow-btn-hover: 0 6px 20px #d1249f5c;
+  --shadow-soft: 0 1px 2px #1e1b4b0a, 0 10px 24px -10px #1e1b4b22;
+  --shadow-soft-hover: 0 1px 2px #1e1b4b0a, 0 14px 32px -10px #d1249f3d;
 
-  /* --- Glass (used on Landing/Auth/Patient cards — never on the clinic
-     data table, where legibility of raw_score/confidence beats polish) --- */
+  /* --- Glass (Landing/Auth/Patient cards — never the clinic data table,
+     where legibility of raw_score/confidence beats polish) --- */
   --glass-bg: rgba(255, 255, 255, 0.56);
-  --glass-border: rgba(27, 42, 107, 0.14);
-  --glass-shadow: 0 1px 2px #1f1b2e0a, 0 20px 44px -16px #1b2a6b33;
+  --glass-border: rgba(30, 27, 75, 0.14);
+  --glass-shadow: 0 1px 2px #1e1b4b0a, 0 20px 44px -16px #1e1b4b33;
 }
 
 html,
@@ -95,6 +112,15 @@ body {
   background: var(--color-bg);
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Shim for legacy `font-serif` headings: the display face carries its
+   personality in weight — Fraunces read as display at 400, Montserrat
+   needs 800. Removed once pages migrate to `font-display font-extrabold`. */
+.font-serif {
+  font-weight: 800;
+  letter-spacing: -0.015em;
 }
 
 /* --- Keyboard focus (accessibility quality floor) ---
@@ -114,8 +140,37 @@ summary:focus-visible {
   border-radius: 4px;
 }
 
+/* --- Grain: the signature noise texture. Apply to any container to give
+   the cream canvas / aurora blobs a premium paper feel. Decorative only:
+   pointer-events off, 6% multiply so text contrast is untouched. --- */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mix-blend-mode: multiply;
+  opacity: 0.06;
+}
 
-/* --- Glass card: frosted surface over the 3D scene / blob backdrop. --- */
+/* --- Text gradient for key headings (brand: deep blue → magenta → pink). --- */
+.text-gradient {
+  background-image: linear-gradient(
+    92deg,
+    var(--color-indigo) 0%,
+    var(--color-magenta) 60%,
+    var(--color-pink) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --- Glass card: frosted surface over the aurora backdrop. --- */
 .glass-card {
   background: var(--glass-bg);
   border: 1.5px solid var(--glass-border);

@@ -9,11 +9,14 @@ export function Modal({
   onClose,
   title,
   children,
+  wide = false,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   children: ReactNode;
+  /** Wider layout for the triage detail split view. */
+  wide?: boolean;
 }) {
   return (
     <AnimatePresence>
@@ -26,7 +29,9 @@ export function Modal({
           onClick={onClose}
         >
           <motion.div
-            className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-card border-[1.5px] border-line bg-surface p-6 shadow-soft"
+            className={`max-h-[90vh] w-full overflow-y-auto rounded-card border border-navy/20 bg-surface p-6 shadow-soft ${
+              wide ? "max-w-4xl" : "max-w-lg"
+            }`}
             initial={{ opacity: 0, scale: 0.94, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}

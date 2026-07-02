@@ -22,7 +22,7 @@ export function ClinicLayout() {
     <div className="flex min-h-screen">
       <GradientBackdrop />
 
-      <aside className="sticky top-0 flex h-screen w-60 flex-none flex-col border-r-[1.5px] border-line bg-surface px-4 py-5 shadow-soft">
+      <aside className="sticky top-0 flex h-screen w-60 flex-none flex-col border-r border-navy/10 bg-surface px-4 py-5 shadow-soft">
         <div className="mb-6 flex items-center gap-2.5 px-1">
           <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta font-serif text-lg text-white shadow-btn">
             W
@@ -70,7 +70,7 @@ export function ClinicLayout() {
           </ul>
         </nav>
 
-        <div className="space-y-3 border-t border-line pt-4">
+        <div className="space-y-3 border-t border-navy/10 pt-4">
           <ModelStatusBadge compact />
           <div className="leading-tight">
             <p className="text-xs text-ink-soft">{t("welcomeLabel")}</p>

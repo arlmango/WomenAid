@@ -5,6 +5,7 @@ import { useAuth } from "../../lib/auth";
 import { getConsentFlag, setConsentFlag } from "../../lib/consentFlag";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { BottomSheet } from "../../components/BottomSheet";
+import { Button } from "../../components/ui";
 import { toast } from "../../lib/toast";
 import type { ConsentResponse } from "../../types/api";
 
@@ -56,7 +57,7 @@ export function PatientConsent() {
     <div className="space-y-4">
       <h1 className="font-serif text-2xl text-navy">{t("navConsent")}</h1>
 
-      <div className="rounded-card border-[1.5px] border-line bg-surface p-5 shadow-soft">
+      <div className="rounded-card border border-navy/15 bg-surface p-5 shadow-soft">
         <div className="mb-4 flex items-center gap-3">
           <span
             className={`grid h-11 w-11 flex-none place-items-center rounded-full ${
@@ -71,21 +72,22 @@ export function PatientConsent() {
         </div>
         <p className="mb-4 text-sm text-ink-soft">{t("consentText")}</p>
         {given ? (
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={() => setSheetMode("withdraw")}
-            className="min-h-11 w-full rounded-btn border-2 border-urgent px-5 text-sm font-semibold text-urgent"
+            className="w-full border-urgent text-urgent hover:bg-urgent-bg"
           >
             {t("consentWithdraw")}
-          </button>
+          </Button>
         ) : (
-          <button
+          <Button
             type="button"
             onClick={() => setSheetMode("give")}
-            className="min-h-11 w-full rounded-btn bg-gradient-to-br from-pink to-magenta px-5 text-sm font-bold uppercase tracking-wide text-white shadow-btn"
+            className="w-full font-bold uppercase tracking-wide"
           >
             {t("consentGive")}
-          </button>
+          </Button>
         )}
       </div>
 
@@ -96,25 +98,18 @@ export function PatientConsent() {
       >
         <p className="mb-4 text-sm text-ink-soft">{t("consentText")}</p>
         <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => setSheetMode(null)}
-            className="min-h-11 flex-1 rounded-btn border-2 border-navy text-sm font-semibold text-navy"
-          >
+          <Button type="button" variant="outline" onClick={() => setSheetMode(null)} className="flex-1">
             {t("cancelButton")}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            disabled={busy}
+            variant={sheetMode === "withdraw" ? "destructive" : "primary"}
+            loading={busy}
             onClick={sheetMode === "withdraw" ? confirmWithdraw : confirmGive}
-            className={`min-h-11 flex-1 rounded-btn text-sm font-bold uppercase tracking-wide text-white shadow-btn disabled:shadow-none ${
-              sheetMode === "withdraw"
-                ? "bg-urgent disabled:bg-urgent-bg"
-                : "bg-gradient-to-br from-pink to-magenta disabled:from-rose-pale disabled:to-rose-pale"
-            }`}
+            className="flex-1 font-bold uppercase tracking-wide"
           >
             {t("confirmButton")}
-          </button>
+          </Button>
         </div>
       </BottomSheet>
     </div>

@@ -829,3 +829,184 @@
   полностью и не обрезается (box-shadow здесь бы обрезался — поэтому outline).
 - **Не делал (по согласованию):** расширение формы регистрации в 2 колонки —
   структурное изменение, отдельным запросом.
+
+## 2026-07-02 — Шаг 1 редизайна: инициализация дизайн-системы (brand book)
+
+- **Контекст:** пользователь запросил полный редизайн frontend под бренд-бук
+  «warm MedTech/FemTech» (тёплый кремовый фон, deep indigo текст, magenta/peach
+  акценты, mesh-grain aurora, две системы карточек). По выбору пользователя
+  незакоммиченная работа прошлой сессии (холодная slate/indigo/teal тема,
+  ~770 строк) убрана в stash `pre-brandbook-redesign` и редизайн начат от HEAD.
+- **Сделано (Шаг 1 из 5):**
+  - **Токены (`index.css @theme`, Tailwind v4):** канва `--color-bg: #FEFCF8`
+    (тёплый крем, не белый); ink `#1E1B4B` (indigo-950, не чёрный); indigo
+    `#4338CA` для серьёзного UI; vibrant magenta `#D1249F` (+ text-safe
+    `magenta-deep #9D1B78`) и peach `#FFD9B8`. Legacy-имена (rose/lavender/
+    mint/gold/line/ink…) перенаправлены на новую палитру — все существующие
+    экраны перекрасились без правки компонентов. Статусные цвета триажа
+    (red/amber/mint) оставлены клинически однозначными — это семантика
+    безопасности, не бренд.
+  - **Типографика:** display — Montserrat 600–900 (геометрический гротеск
+    из бренд-бука, поддерживает кириллицу); body — Manrope 400–800 (вместо
+    Plus Jakarta Sans/Poppins из брифа — у обоих НЕТ кириллицы, русский текст
+    падал в системный шрифт); mono — IBM Plex Mono только для технических
+    данных (model_status и т.п.). Шим `.font-serif { font-weight: 800 }`
+    перекрашивает все существующие заголовки в display-шрифт до миграции
+    страниц на `font-display` (шаги 2–4).
+  - **Утилиты:** глобальный класс `.grain` (SVG feTurbulence noise, 6%
+    multiply, pointer-events off) — фирменная «зернистость»; `.text-gradient`
+    (indigo→magenta→pink) для ключевых заголовков.
+  - **UI-кит (`components/ui/`):** `Card` с двумя бренд-вариантами — `med`
+    (белая, тонкая рамка border-navy, rounded-md — для клинического/
+    юридического) и `fem` (градиент indigo→violet или pink→gold, белый текст,
+    rounded-3xl — для пациентских карточек), + `glass`; `Button` (primary
+    magenta→pink градиент / navy / outline / ghost / destructive, loading,
+    whileTap); `lib/cn.ts`.
+  - **`GradientBackdrop`:** aurora-блобы pink/lavender/peach/orange (40–50%
+    opacity, blur-3xl) + `.grain` поверх — мотив «mesh grain» на каждом экране.
+  - **Fix попутно:** hero Landing анимировал вариативные оси Fraunces
+    (`"wght" 400→600`) — с Montserrat заголовок рендерился тонким; анимация
+    осей удалена, заголовок переведён на `font-black tracking-tight`.
+- **Файлы:** `index.html`, `src/index.css`, `src/lib/cn.ts` (новый),
+  `src/components/ui/{Button,Card,index}.ts(x)` (новые),
+  `src/components/GradientBackdrop.tsx`, `src/pages/Landing.tsx` (только hero).
+- **Проверка:** `tsc -b && vite build` чисто; скриншот Landing через preview —
+  кремовая канва, Montserrat Black hero с градиентом, Manrope body с
+  кириллицей, блобы+grain на месте. Дисклеймер-бейдж «AI decision-support,
+  не диагноз» на месте.
+- **Дальше (ждёт подтверждения):** Шаг 2 — Auth split-screen, Шаг 3 — Patient
+  portal, Шаг 4 — Clinic portal + triage view, Шаг 5 — motion polish.
+
+## 2026-07-02 — Шаг 2 редизайна: Auth split-screen
+
+- **Сделано (Шаг 2 из 5):**
+  - **`AuthLayout`** переведён с центрированной колонки на split-screen:
+    слева (только lg+) — миссия-панель на кремовой канве с aurora-блобами и
+    `.grain`: бейдж «AI decision-support, не диагноз», заголовок Montserrat
+    Black UPPERCASE с `.text-gradient` на акценте, сабтекст, футнот
+    «демо-проект». Копия переиспользует существующие i18n-ключи
+    (`landingTag/Headline*/Subtext/FooterNote`) — новых медицинских
+    формулировок не вводилось. Справа — белая панель формы (max-w-lg),
+    LanguageToggle в шапке, на мобильном бренд-марка сверху вместо панели.
+  - **`LoginPage`**: убраны glass-card и CursorGlow (форма теперь живёт на
+    белой панели), кнопки мигрированы на UI-кит — primary (magenta→pink
+    градиент, loading-спиннер) и outline (тонкая navy-рамка).
+  - **`RegisterPage`**: поля в 2-колоночной сетке на sm+ (имя/дата рождения,
+    регион/телефон, пароль/повтор); **блок согласия — строгая med-карточка**
+    (`Card variant="med"`: белая, тонкая navy-рамка, rounded-md) с
+    uppercase-заголовком `consentSectionTitle` (новый ключ RU+KZ), скроллом
+    полного текста и checkbox-строкой за разделителем. Вся логика согласия
+    не тронута: checkbox заблокирован пока текст не загружен, submit
+    заблокирован без согласия (гейт CLAUDE.md).
+  - Логика auth (login/register/JWT/homePathForRole/обработка ApiError) —
+    без изменений, только представление.
+- **Файлы:** `layouts/AuthLayout.tsx`, `pages/auth/{LoginPage,RegisterPage}.tsx`,
+  `i18n/translations.ts` (+`consentSectionTitle` RU+KZ).
+- **Проверка:** `tsc -b && vite build` чисто. Скриншоты `/auth` и
+  `/auth/register` (preview): split-screen рендерится, med-карточка согласия
+  на месте; при недоступном backend текст согласия показывает ошибку,
+  checkbox и submit корректно заблокированы (гейт работает и в новом UI).
+
+## 2026-07-02 — Шаг 3 редизайна: Patient portal (mobile-first FemTech)
+
+- **Сделано (Шаг 3 из 5):**
+  - **`PatientLayout`**: мобильный bottom-nav переделан в плавающий glass-док
+    (rounded-full, glass-card, отступ от краёв, safe-area-inset) — активный
+    таб получает градиентную pink→magenta «пилюлю» за иконкой (layoutId
+    spring). Desktop-сайдбар сохранён; 1.5px-линии заменены на волосяные
+    border-navy/10.
+  - **`PatientHome`**: новый hero — «мягкая FemTech» градиент-карточка
+    (rounded-3xl, белый текст, `.grain`, декоративные круги) с датой
+    следующего скрининга (тот же `/schedule` endpoint, новых API нет) или
+    текстом статуса. **Градиент hero семантический, как на Schedule:** спокойный
+    indigo→violet по умолчанию, pink→gold при DUE_SOON, red при OVERDUE —
+    пастель никогда не приглушает сигнал «к врачу» (поймано на скриншоте
+    и исправлено). Плитки навигации переведены на rounded-card +
+    тонкую navy-рамку; ModelStatusBadge и футер-дисклеймер на месте.
+  - **`PatientSchedule`**: статус-карточка — fem-градиент по статусу
+    (UP_TO_DATE/прочие — indigo→violet, DUE_SOON — pink→gold, OVERDUE —
+    urgent-red), белый текст, mono-код статуса сохранён, даты в чипах
+    bg-white/15.
+  - **`PatientUpload` / `PatientSymptoms` / `PatientConsent`**: CTA
+    мигрированы на UI-кит `<Button>` (primary-градиент со спиннером,
+    outline, destructive для отзыва согласия в BottomSheet); карточки на
+    тонких navy-рамках. Вся логика (consent-гейт при загрузке, 403-ресинк
+    флага, red-flag тосты) не тронута.
+- **Файлы:** `layouts/PatientLayout.tsx`, `pages/patient/{PatientHome,
+  PatientSchedule,PatientUpload,PatientSymptoms,PatientConsent}.tsx`.
+- **Проверка:** `tsc -b && vite build` чисто. Скриншоты с **живым backend**
+  (uvicorn + vite dev proxy, зарегистрирована демо-пациентка aigul_demo):
+  hero при OVERDUE — красный с «рекомендуем обратиться к врачу»; Schedule —
+  красная статус-карточка с mono `OVERDUE`; Symptoms — red-flag бейдж на
+  записи «Кровотечение после полового акта» (запись с is_red_flag=true от
+  детерминированного правила backend); бейдж DEMO_NOT_CLINICALLY_VALIDATED
+  в шапке. Glass-док присутствует в DOM (5 табов, sm:hidden).
+
+## 2026-07-02 — Шаг 4 редизайна: Clinic portal + triage split view
+
+- **Backend (по явному решению пользователя):** новый endpoint
+  `GET /risk-assessment/clinic/{id}/image` — отдаёт оригинальный снимок для
+  ревью в кабинете. Только clinician/admin (тот же гейт, что у PDF-отчёта),
+  расшифровка только на время ответа (на диске файл остаётся зашифрованным),
+  `Cache-Control: no-store`, каждый просмотр пишется в аудит
+  (`view_image`). Тип определяется по магическим байтам (jpeg/png).
+  **AI-highlight НЕ добавлялся и не имитировался** — модель (RandomForest на
+  классических признаках) не даёт карт внимания; в UI об этом честная
+  подпись, а не фейковый оверлей.
+- **Frontend:**
+  - **Обязательный дисклеймер** (бриф + CLAUDE.md) на каждом триаж-экране:
+    жёлтая warning-плашка вверху страницы очереди И внутри модалки ревью —
+    «⚠️ AI Decision Support Only — Clinical Validation Required. Not a
+    diagnosis.» + русская формулировка. Намеренно вне i18n-переключателя:
+    всегда видна, обе формулировки сразу.
+  - **`ClinicQueue`**: заголовок uppercase Montserrat; стат-плитки и таблица
+    на белых карточках с тонкой navy-рамкой (строгий med-стиль); шапка
+    таблицы font-display uppercase; severity-бейджи (mono) сохранены;
+    refresh → UI-кит Button outline.
+  - **Triage detail** (модалка `wide`, max-w-4xl): split view —
+    слева **просмотрщик оригинального снимка** (тёмная панель, зум
+    100/150/200/300% с кнопками ZoomIn/ZoomOut/Reset и aria-подписями
+    RU+KZ, честные состояния загрузки/ошибки), справа — severity-бейдж,
+    данные (пациентка, дата, raw_score, confidence, model_status — mono),
+    существующее решение, PDF-кнопка, форма ревью (submit → Button navy).
+  - `Modal` получил проп `wide`; hairline-полировка `ClinicLayout`.
+  - Новые i18n-ключи (RU+KZ): `triageImageTitle`, `triageImageLoadError`,
+    `zoomIn/zoomOut/zoomReset`.
+- **Файлы:** `backend/app/routers/risk_assessment.py`,
+  `frontend/src/{components/Modal.tsx,layouts/ClinicLayout.tsx,
+  pages/clinic/ClinicQueue.tsx,i18n/translations.ts}`.
+- **Проверка (живой стенд):** `tsc -b && vite build` чисто; backend
+  импортируется. E2E: согласие → загрузка реального jpeg от пациентки
+  (PENDING_REVIEW, в ответе пациентке нет raw_score) → в кабинете врача
+  (создан демо-юзер dr_demo/clinician) очередь с плашкой-дисклеймером и
+  бейджем; клик по строке → split view, снимок расшифрован и отрендерен,
+  зум до 150% подтверждён (transform scale(1.5)). Доступ пациентки к
+  `/clinic/{id}/image` → 403. ВАЖНО: upload требует
+  `WOMENAID_FILE_ENCRYPTION_KEY` (backend без него отклоняет запись — так и
+  задумано). В dev-БД остались демо-записи: пациентка aigul_demo,
+  врач dr_demo (пароль demopass123), 1 assessment, 3 симптома.
+
+## 2026-07-02 — Шаг 5 редизайна: motion-полировка (финал)
+
+- **Сделано (Шаг 5 из 5):**
+  - **`main.tsx`**: приложение обёрнуто в `<MotionConfig reducedMotion="user">` —
+    все framer-motion анимации приложения глобально уважают
+    `prefers-reduced-motion` (transform-анимации отключаются, opacity
+    остаётся); CSS-анимации (`gradient-spin`, `cursor-glow`) уже имели
+    собственные media-правила.
+  - **`AuthLayout`**: мягкий staggered-вход миссии-панели (бейдж → заголовок →
+    сабтекст, fadeUp + SPRING_SOFT, stagger 0.09s).
+  - **`ClinicQueue`**: стат-плитки получили лёгкий stagger fade-up
+    (delay i×0.06) — консистентно с плитками PatientHome.
+  - Намеренно НЕ добавлено больше: страницы уже входят через PageTransition,
+    двойные анимации читались бы как шум.
+- **Файлы:** `main.tsx`, `layouts/AuthLayout.tsx`, `pages/clinic/ClinicQueue.tsx`.
+- **Проверка:** `tsc -b && vite build` чисто; скриншот `/auth` после
+  анимации — вёрстка в конечном состоянии без сдвигов.
+- **Итог редизайна (шаги 1–5):** дизайн-система бренд-бука (крем #FEFCF8,
+  ink #1E1B4B, magenta/peach, mesh-grain, Montserrat+Manrope+IBM Plex Mono),
+  auth split-screen, patient portal (glass-док, fem-карточки со
+  статус-семантикой), clinic portal (дисклеймер-плашки, triage split view
+  с реальным снимком и зумом, новый защищённый image-endpoint), motion.
+  Все инварианты CLAUDE.md проверены на живом стенде. Незакоммиченная
+  прошлая тема лежит в `git stash` (`pre-brandbook-redesign`).

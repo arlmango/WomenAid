@@ -24,11 +24,10 @@ export function PatientLayout() {
     <div className="flex min-h-screen flex-col">
       <GradientBackdrop />
 
-      {/* Full-width on every viewport — no more "floating phone card" on
-          desktop. Mobile gets a bottom tab bar (below); desktop gets a
-          sidebar (mirrors ClinicLayout's nav pattern for consistency
-          between the two cabinets). */}
-      <header className="sticky top-0 z-20 flex flex-none items-center justify-between gap-2 border-b-[1.5px] border-line bg-surface px-4 py-3 shadow-soft sm:px-8">
+      {/* Full-width on every viewport. Mobile gets a floating glass dock
+          (below); desktop gets a sidebar (mirrors ClinicLayout's nav pattern
+          for consistency between the two cabinets). */}
+      <header className="sticky top-0 z-20 flex flex-none items-center justify-between gap-2 border-b border-navy/10 bg-surface px-4 py-3 shadow-soft sm:px-8">
         <div className="flex items-center gap-2">
           <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-pink to-magenta font-serif text-sm text-white">
             W
@@ -51,7 +50,7 @@ export function PatientLayout() {
       </header>
 
       <div className="flex flex-1">
-        <nav className="hidden flex-none flex-col gap-1 border-r-[1.5px] border-line bg-surface px-3 py-5 sm:flex sm:w-56">
+        <nav className="hidden flex-none flex-col gap-1 border-r border-navy/10 bg-surface px-3 py-5 sm:flex sm:w-56">
           {TABS.map((tab) => (
             <NavLink
               key={tab.to}
@@ -82,7 +81,7 @@ export function PatientLayout() {
           ))}
         </nav>
 
-        <main className="min-w-0 flex-1 px-4 py-4 pb-24 sm:px-8 sm:py-7 sm:pb-7">
+        <main className="min-w-0 flex-1 px-4 py-4 pb-28 sm:px-8 sm:py-7 sm:pb-7">
           <div className="mx-auto w-full max-w-3xl">
             <AnimatePresence mode="wait" initial={false}>
               <PageTransition key={location.pathname} variant="mobile">
@@ -93,30 +92,32 @@ export function PatientLayout() {
         </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-20 flex-none border-t-[1.5px] border-line bg-surface pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-soft sm:hidden">
-        <ul className="grid grid-cols-5">
+      {/* Floating glass dock — the mobile-app signature of the patient
+          cabinet. Active tab gets the brand gradient pill behind its icon. */}
+      <nav className="fixed inset-x-4 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-20 sm:hidden">
+        <ul className="glass-card grid grid-cols-5 rounded-full px-1.5 py-1.5">
           {TABS.map((tab) => (
             <li key={tab.to}>
               <NavLink
                 to={tab.to}
                 end={tab.end}
-                className="group relative flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium"
+                className="group relative flex flex-col items-center gap-0.5 rounded-full py-1.5 text-[10px] font-semibold"
               >
                 {({ isActive }) => (
                   <>
                     {isActive && (
                       <motion.span
                         layoutId="patient-tab-indicator"
-                        className="absolute top-1 h-7 w-7 rounded-full bg-rose-bg"
+                        className="absolute inset-x-1 top-0.5 h-8 rounded-full bg-gradient-to-br from-pink to-magenta shadow-btn"
                         transition={{ type: "spring", stiffness: 420, damping: 32 }}
                       />
                     )}
                     <tab.Icon
-                      size={20}
+                      size={18}
                       strokeWidth={2.25}
-                      className={`relative z-10 ${isActive ? "text-rose-deep" : "text-ink-muted"}`}
+                      className={`relative z-10 ${isActive ? "text-white" : "text-ink-soft"}`}
                     />
-                    <span className={`relative z-10 ${isActive ? "text-rose-deep" : "text-ink-muted"}`}>
+                    <span className={`relative z-10 ${isActive ? "text-magenta-deep" : "text-ink-muted"}`}>
                       {t(tab.labelKey)}
                     </span>
                   </>
